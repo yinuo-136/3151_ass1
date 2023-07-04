@@ -34,36 +34,44 @@ public class Ass1 extends Thread {
     }
 
     public void delete(int x) {
-
+        int result = this.binarySearch(x);
+        if (this.arr.get(result) == x) {
+            this.arr.set(result, -1);
+        }
     }
 
     private int binarySearch(int tar) {
+        if (numV == 0)
+            return 0;
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
             int mid = (left + right) / 2;
-            if (this.arr.get(mid) == -1) {
-                if (mid > 0) {
-                    mid = mid - 1;
-                } else {
-                    mid = mid + 1;
+            while (this.arr.get(mid) == -1) {
+                mid++;
+                if (mid > right) {
+                    right = left + (left + right) / 2 - 1;
+                    mid = (left + right) / 2;
                 }
+
+            }
+            if (this.arr.get(mid) == tar) {
+                return mid;
+            } else if (tar < this.arr.get(mid)) {
+                right = mid - 1;
             } else {
-                if (this.arr.get(mid) == tar) {
-                    return mid;
-                } else if (tar < this.arr.get(mid)) {
-                    right = mid - 1;
-                } else {
-                    left = mid + 1;
-                }
+                left = mid + 1;
             }
         }
-        return -1;
+        System.out.println("left :" + Integer.toString(left));
+        System.out.println("right :" + Integer.toString(right));
+        return left;
     }
 
     public boolean member(int x) {
         int result = this.binarySearch(x);
-        if (result == -1) {
+        System.out.println(result);
+        if (this.arr.get(result) != x) {
             return false;
         }
         return true;
@@ -73,6 +81,9 @@ public class Ass1 extends Thread {
         String result = "";
         result = result + "[";
         for (int ele : this.arr) {
+            if (ele == -1) {
+                continue;
+            }
             result = result + Integer.toString(ele) + ", ";
         }
         result = result + "]";
@@ -82,15 +93,15 @@ public class Ass1 extends Thread {
     public static void main(String[] args) {
         Ass1 test = new Ass1(10);
         test.arr.add(0);
+        test.arr.add(1);
         test.arr.add(2);
-        test.arr.add(4);
-        test.arr.add(5);
+        test.arr.add(3);
         test.arr.add(8);
-        test.numV = 5;
+        test.numV = 3;
         test.lastEleIndex = 4;
 
         System.out.println(test.member(3));
-        System.out.println(test.member(2));
+        System.out.println(test.member(4));
         test.print_sorted();
     }
 }
