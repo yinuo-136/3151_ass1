@@ -33,7 +33,10 @@ public class Ass1 extends Thread {
         // binaryS(x) ->index
         // findNearestNull(index) -> index2
         // x <> get(index)
+
+        if (this.numV == this.lastEleIndex + 1) return; //list is full no empty element
         int insertIndex = this.binarySearch(x);
+        if (this.arr.get(insertIndex) == x) return; // element already exsit, do not insert
         int nullIndex = this.findNearestNull2(insertIndex);
 
         if (insertIndex < nullIndex) {
@@ -56,36 +59,38 @@ public class Ass1 extends Thread {
 
     }
 
-    public int findNearestNull2(int index) {
+    private int findNearestNull2(int index) {
+
+        if (this.numV == this.lastEleIndex + 1) return -1; //list is full no empty element
+
         int i = index;
         int j = index;
         while (this.arr.get(i) != -1 && this.arr.get(j) != -1) {
-            if (i > 0) {
-                i--;
-            }
-            if (j < this.lastEleIndex) {
-                j++;
-            }
+            if (i > 0) i--;
+            if (i < lastEleIndex) j++;
         }
-        int result = -1;
+        //int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
-            // default i
+            // back and front both have null
             if (index - i <= j - index) {
-                result = i;
+                return i;
             } else {
-                result = j;
+                return j;
             }
 
         } else if (this.arr.get(i) == -1 && this.arr.get(j) != -1) {
             // front has null
-            result = i;
-        } else if (this.arr.get(i) != -1 && this.arr.get(j) == -1) {
-            // backward has null
-            result = j;
+            return i;
         } else {
-            // no null in arr
+            // back has null
+            return j;
         }
-        return result;
+        
+        
+        // else if (this.arr.get(i) != -1 && this.arr.get(j) == -1) {
+        //     // backward has null
+        //     return j;
+        // } 
     }
 
     public int findNearestNull1(int index) {
@@ -131,15 +136,24 @@ public class Ass1 extends Thread {
     }
 
     public void delete(int x) {
-        int result = this.binarySearch(x);
-        if (this.arr.get(result) == x) {
-            this.arr.set(result, -1);
+        int resultIndex = this.binarySearch(x);
+        if (this.arr.get(resultIndex) == x) {
+            this.arr.set(resultIndex, -1);
+            this.numV--;
+
+            // if (resultIndex == lastEleIndex) {
+            //     lastEleIndex--; //TOBEDISCUSSED
+            // }
         }
     }
-
+    // test.arr.add(-1);0
+    //     test.arr.add(4);1
+    //     test.arr.add(-1);2
+    //     test.arr.add(8);3
+    //     test.arr.add(-1);4
+    //     test.arr.add(10);5
     private int binarySearch(int tar) {
-        if (numV == 0)
-            return 0;
+        if (numV == 0) return 0;
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
@@ -149,6 +163,10 @@ public class Ass1 extends Thread {
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
+                }
+                if (mid < 0) {
+                    System.out.println("origin" );
+                    return 0; //in case mid goes out of left bound
                 }
 
             }
@@ -168,6 +186,7 @@ public class Ass1 extends Thread {
     public boolean member(int x) {
         int result = this.binarySearch(x);
         // System.out.println(result);
+        if (result > lastEleIndex) return false; 
         if (this.arr.get(result) != x) {
             return false;
         }
@@ -189,17 +208,17 @@ public class Ass1 extends Thread {
 
     public static void main(String[] args) {
         Ass1 test = new Ass1(10);
-        test.arr.add(0);
-        test.arr.add(-1);
-        test.arr.add(5);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(4);
         test.arr.add(8);
-        test.arr.add(-1);
         test.arr.add(10);
-        test.numV = 4;
+        test.arr.add(11);
+        test.numV = 6;
         test.lastEleIndex = 5;
-        System.out.println(test.findNearestNull2(2));
-        System.out.println(test.member(3));
-        System.out.println(test.member(4));
+        System.out.println(test.member(12));
+        //System.out.println(test.findNearestNull2(2));
+        // System.out.println(test.member(4));
         test.print_sorted();
     }
 }
