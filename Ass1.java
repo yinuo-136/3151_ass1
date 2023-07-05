@@ -190,16 +190,18 @@ public class Ass1 extends Thread {
     public static void main(String[] args) {
         Ass1 test = new Ass1(10);
         test.arr.add(0);
+        test.arr.add(2);
         test.arr.add(-1);
         test.arr.add(5);
         test.arr.add(8);
-        test.arr.add(-1);
-        test.arr.add(10);
         test.numV = 4;
-        test.lastEleIndex = 5;
-        System.out.println(test.findNearestNull2(2));
-        System.out.println(test.member(3));
-        System.out.println(test.member(4));
+        test.lastEleIndex = 4;
+        // test.delete(0);
+        // test.delete(2);
+        System.out.println(test.member(0));
+        System.out.println(test.member(10));
+        System.out.println(test.member(6));
+
         test.print_sorted();
     }
 }
