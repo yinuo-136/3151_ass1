@@ -34,11 +34,23 @@ public class Ass1 extends Thread {
         // findNearestNull(index) -> index2
         // x <> get(index)
 
-        if (this.numV == N) return; //list is full no empty element
+        //list is full no empty element
+        if (this.numV == N) return; 
         int insertIndex = this.binarySearch(x);
-        if (this.arr.get(insertIndex) == x) return; // element already exsit, do not insert
-        int nullIndex = this.findNearestNull2(insertIndex);
+        
+        // element already exsit, do not insert
+        if (this.arr.get(insertIndex) == x) return;
 
+        // x is the biggest element, append to the last position
+        if (insertIndex > lastEleIndex) {
+            this.numV++;
+            this.arr.add(x);
+            this.lastEleIndex++;
+            return;
+        } 
+
+        //insert the element between the current list
+        int nullIndex = this.findNearestNull2(insertIndex);
         if (insertIndex < nullIndex) {
             if (x < this.arr.get(insertIndex)) {
                 for (int i = insertIndex; i < nullIndex; i++) {
@@ -60,14 +72,21 @@ public class Ass1 extends Thread {
     }
 
     private int findNearestNull2(int index) {
+        //list is full, return -1.
+        if (this.numV == N) return -1;
 
-        if (this.numV == this.lastEleIndex + 1) return -1; //list is full no empty element
+        //if not full, and there's no -1, return 
+
 
         int i = index;
         int j = index;
         while (this.arr.get(i) != -1 && this.arr.get(j) != -1) {
             if (i > 0) i--;
-            if (i < lastEleIndex) j++;
+            if (j < this.lastEleIndex) j++;
+
+            //when lastIndex is not -1 when we're searching to the right, the nearest index
+            //must be lastindex + 1
+            if (j == this.lastEleIndex && this.arr.get(j) != -1) return j+1;
         }
         //int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
@@ -211,9 +230,11 @@ public class Ass1 extends Thread {
     public static void main(String[] args) {
         //Ass1.test1();
         test1();
+        test2();
     }
 
     public static void test1() {
+        System.out.println("test1");
         Ass1 test = new Ass1(10);
         test.arr.add(-1);
         test.arr.add(2);
@@ -223,6 +244,45 @@ public class Ass1 extends Thread {
         test.arr.add(11);
         test.numV = 4;
         test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(3));
+        System.out.println(test.binarySearch(12));
+    }
+
+    public static void test2() {
+        Ass1 test = new Ass1(10);
+        test.arr.add(1);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        System.out.println(test.binarySearch(12));
+    }
+
+    public static void test3() {
+        Ass1 test = new Ass1(10);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(4);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        System.out.println(test.binarySearch(1));
+    }
+
+    public static void test4() {
+        Ass1 test = new Ass1(10);
+        test.arr.add(1);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        System.out.println(test.binarySearch(4));
     }
 }
