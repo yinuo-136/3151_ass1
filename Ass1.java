@@ -207,6 +207,11 @@ public class Ass1 extends Thread {
     }
 
     public static void main(String[] args) {
+        //Ass1.test1();
+        test1();
+    }
+
+    public static void test1() {
         Ass1 test = new Ass1(10);
         test.arr.add(2);
         test.arr.add(3);
@@ -216,9 +221,6 @@ public class Ass1 extends Thread {
         test.arr.add(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        System.out.println(test.member(12));
-        //System.out.println(test.findNearestNull2(2));
-        // System.out.println(test.member(4));
-        test.print_sorted();
+        System.out.println(test.binarySearch(12));
     }
 }
