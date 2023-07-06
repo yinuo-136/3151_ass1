@@ -38,45 +38,94 @@ public class Ass1 extends Thread {
         if (this.numV == N) return; 
         int insertIndex = this.binarySearch(x);
         
-        // element already exsit, do not insert
-        if (this.arr.get(insertIndex) == x) return;
 
+        if (insertIndex == lastEleIndex + 1) {
+            
+        }
+        else {
+            if (this.arr.get(insertIndex) == x) return;
+        }
+
+        // element already exsit, do not insert
+     
         // x is the biggest element, append to the last position
         if (insertIndex > lastEleIndex) {
-            this.numV++;
-            this.arr.add(x);
-            this.lastEleIndex++;
-            return;
+            if (!this.arr.contains(-1)) {
+                //if everything before insertIndex has no -1, otherwise, do nothing
+                this.numV++;
+                this.arr.add(x);
+                this.lastEleIndex++;
+                return;
+            }
         } 
 
         //insert the element between the current list
         int nullIndex = this.findNearestNull2(insertIndex);
+        System.out.println("insertidx:" + insertIndex);
+        System.out.println("nullidx:" + nullIndex);
         if (insertIndex < nullIndex) {
+            //RIGHT SHIFT
             if (x < this.arr.get(insertIndex)) {
-                for (int i = insertIndex; i < nullIndex; i++) {
-                    int value = this.arr.get(i);
-                    this.arr.set(i + 1, value);
+                //the element we want to insert is larger than the element with index - insertIndex
+                int previous_ele = 0;
+                for (int i = insertIndex; i <= nullIndex; i++) {
+                    
+                    if (i > lastEleIndex) {
+                        //only execute at the last iteration
+                        this.arr.add(previous_ele);
+                        this.lastEleIndex++ ;
+                    } else {
+                        int temp = this.arr.get(i);
+                        this.arr.set(i, previous_ele);
+                        previous_ele = temp;
+                    }
+
+                    
                 }
                 this.arr.set(insertIndex, x);
             } else {
-                for (int i = insertIndex + 1; i < nullIndex; i++) {
-                    int value = this.arr.get(i);
-                    this.arr.set(i + 1, value);
+                int previous_ele = 0;
+                for (int i = insertIndex + 1; i <= nullIndex; i++) {
+                    if (i > lastEleIndex) {
+                        //only execute at the last iteration
+                        this.arr.add(previous_ele);
+                        this.lastEleIndex++;
+                    } else {
+                        int temp = this.arr.get(i);
+                        this.arr.set(i, previous_ele);
+                        previous_ele = temp;
+                    }
                 }
                 this.arr.set(insertIndex + 1, x);
             }
         } else {
-            // shift left
+            //LEFT SHIFT
+            if (x < this.arr.get(insertIndex)) {
+                int previous_ele = 0;
+                for (int i = insertIndex - 1; i >= nullIndex; i--) {
+                    int temp = this.arr.get(i);
+                    this.arr.set(i, previous_ele);
+                    previous_ele = temp;
+                }
+                this.arr.set(insertIndex - 1, x);
+            } else {
+                int previous_ele = 0;
+                for (int i = insertIndex; i >= nullIndex; i--) {
+                    int temp = this.arr.get(i);
+                    this.arr.set(i, previous_ele);
+                    previous_ele = temp;
+                }
+                this.arr.set(insertIndex, x);
+            }
         }
+        this.numV++;
+        return;
 
     }
 
     private int findNearestNull2(int index) {
         //list is full, return -1.
-        if (this.numV == N) return -1;
-
-        //if not full, and there's no -1, return 
-
+        if (this.numV == N) return -1; 
 
         int i = index;
         int j = index;
@@ -86,8 +135,14 @@ public class Ass1 extends Thread {
 
             //when lastIndex is not -1 when we're searching to the right, the nearest index
             //must be lastindex + 1
-            if (j == this.lastEleIndex && this.arr.get(j) != -1) return j+1;
+            System.out.println("i:" + i + " j:" + j);
+            if (j == this.lastEleIndex && this.arr.get(j) != -1) {
+                if (this.arr.get(i) != -1) {
+                    return j+1;
+                }
+            } 
         }
+        
         //int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
@@ -161,7 +216,10 @@ public class Ass1 extends Thread {
             this.numV--;
             if (resultIndex == lastEleIndex) {
                 int temp = lastEleIndex;
-                while (this.arr.get(temp) == -1) temp--;
+                while (this.arr.get(temp) == -1) {
+                    this.arr.remove(temp);
+                    temp--;
+                }
                 this.lastEleIndex = temp;
             }
             
@@ -227,27 +285,25 @@ public class Ass1 extends Thread {
         System.out.println(result);
     }
 
-    public static void main(String[] args) {
-        //Ass1.test1();
-        test1();
-        test2();
-    }
+    
 
     public static void test1() {
-        System.out.println("test1");
+        System.out.println("================test1=============");
         Ass1 test = new Ass1(10);
-        test.arr.add(-1);
+        test.arr.add(1);
         test.arr.add(2);
-        test.arr.add(-1);
-        test.arr.add(8);
-        test.arr.add(10);
-        test.arr.add(11);
+        test.arr.add(3);
+        test.arr.add(4);
         test.numV = 4;
-        test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(12));
+        test.lastEleIndex = 3;
+        test.binarySearch(5);
+        test.insert(5);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
     }
 
     public static void test2() {
+        System.out.println("=========================test2======================");
         Ass1 test = new Ass1(10);
         test.arr.add(1);
         test.arr.add(2);
@@ -257,10 +313,14 @@ public class Ass1 extends Thread {
         test.arr.add(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(12));
+        test.binarySearch(12);
+        test.insert(12);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
     }
 
     public static void test3() {
+        System.out.println("==============test3=================");
         Ass1 test = new Ass1(10);
         test.arr.add(2);
         test.arr.add(3);
@@ -270,10 +330,14 @@ public class Ass1 extends Thread {
         test.arr.add(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(1));
+        test.binarySearch(1);
+        test.insert(1);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
     }
 
     public static void test4() {
+        System.out.println("==============test4=================");
         Ass1 test = new Ass1(10);
         test.arr.add(1);
         test.arr.add(2);
@@ -283,6 +347,162 @@ public class Ass1 extends Thread {
         test.arr.add(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(4));
+        test.binarySearch(8);
+        test.delete(8);
+        test.insert(9);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test5() {
+        System.out.println("==============test5=================");
+        Ass1 test = new Ass1(10);
+        test.arr.add(1);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        test.binarySearch(8);
+        test.delete(8);
+        test.delete(10);
+        test.insert(9);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+    
+    public static void test6() {
+        System.out.println("==============test6=================");
+        Ass1 test = new Ass1(10);
+        test.arr.add(1);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        test.binarySearch(8);
+        test.delete(8);
+        test.delete(10);
+        test.delete(11);
+        test.insert(9);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+     public static void test7() {
+        System.out.println("==============test7=================");
+        Ass1 test = new Ass1(10);
+        test.arr.add(1);
+        test.arr.add(2);
+        test.arr.add(4);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        test.binarySearch(8);
+        test.delete(8);
+        test.delete(10);
+        test.delete(11);
+        test.insert(3);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test8() {
+        System.out.println("==============test8=================");
+        Ass1 test = new Ass1(10);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(4);
+        test.arr.add(8);
+        test.arr.add(10);
+        test.arr.add(11);
+        //test.arr.add(12);
+        test.numV = 6;
+        test.lastEleIndex = 5;
+        test.binarySearch(8);
+        test.delete(2);
+        test.delete(3);
+        test.insert(5);
+        //test.insert(3);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test9() {
+        System.out.println("==============test9=================");
+        Ass1 test = new Ass1(10);
+        test.arr.add(2);
+        test.arr.add(-1);
+        test.arr.add(4);
+        test.arr.add(8);
+        test.arr.add(-1);
+        test.arr.add(11);
+        //test.arr.add(12);
+        test.numV = 4;
+        test.lastEleIndex = 5;
+        test.binarySearch(12);
+        test.insert(12);
+        //test.insert(3);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+    
+    /*
+     * When arr is full, you have to compress(delete all -1)
+     * 
+     */
+    public static void test10() {
+        
+        System.out.println("==============test10=================");
+        Ass1 test = new Ass1(6);
+        test.arr.add(2);
+        test.arr.add(3);
+        test.arr.add(4);
+        test.arr.add(8);
+        test.arr.add(-1);
+        test.arr.add(11);
+        //test.arr.add(12);
+        test.numV = 5;
+        test.lastEleIndex = 5;
+        test.binarySearch(12);
+        test.insert(12);
+        
+        test.insert(9);
+        //test.insert(3);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+    public static void main(String[] args) {
+        //Ass1.test1();
+        // test1();
+        // test2();
+        // test3();
+        // test4();
+        // test5();
+        // test6();
+        //test7();
+        //test8();
+        //test9();
+        test10();
     }
 }
