@@ -1,94 +1,98 @@
 import java.util.ArrayList;
-
 /**
  * ass1
  */
-public class Ass1 extends Thread {
+public class Ass1 {
 
     // size of bounded arr
-    int N;
+    static int N;
     // num of ele
-    int numV;
+    static int numV;
     // last ele index
-    int lastEleIndex;
+    static int lastEleIndex;
     //
-    ArrayList<Integer> arr = new ArrayList<Integer>();
+    static ArrayList<Integer> arr = new ArrayList<Integer>();
     // index|value ??
     // ArrayList<String> cp_Arr;
 
-    // concorrency
+    // concurrency
     // bool isFull;
     // if cv1 = 0, do shift. init val = N/4
     int cv1;
     int shiftRatio = N / 4;
 
     // constructor
-    public Ass1(int N) {
-        this.N = N;
-        this.numV = 0;
-        this.lastEleIndex = 0;
+    public Ass1(int n) {
+        N = n;
+        numV = 0;
+        lastEleIndex = 0;
     }
 
     public void insert(int x) {
-        // binaryS(x) ->index
-        // findNearestNull(index) -> index2
-        // x <> get(index)
-        int insertIndex = this.binarySearch(x);
-        int nullIndex = this.findNearestNull2(insertIndex);
+        // check if the array is full
+        if (numV == N) {
+            return;
+        }
+        
+        int index = binarySearch(x);
 
-        if (insertIndex < nullIndex) {
-            if (x < this.arr.get(insertIndex)) {
-                for (int i = insertIndex; i < nullIndex; i++) {
-                    int value = this.arr.get(i);
-                    this.arr.set(i + 1, value);
-                }
-                this.arr.set(insertIndex, x);
-            } else {
-                for (int i = insertIndex + 1; i < nullIndex; i++) {
-                    int value = this.arr.get(i);
-                    this.arr.set(i + 1, value);
-                }
-                this.arr.set(insertIndex + 1, x);
+        if(index > lastEleIndex) {
+            arr.add(x);
+            lastEleIndex++;
+            numV++;
+            return;
+        }
+        // check duplication
+        if (arr.get(binarySearch(x)) == x) {
+            return;
+        }
+
+        int emptyIndex = findNearestEmpty(index);
+        // check if there exists empty cell
+        if (emptyIndex != -1) {
+            // do the shift
+            if (arr.get(index) > x) {
+                index--;
             }
-        } else {
+            shift(emptyIndex, index);
+
+            arr.set(index, x);
+            numV++;
+            return;
+        }
+
+        arr.add(-1);
+        lastEleIndex++;
+        shift(lastEleIndex ,index);
+        arr.set(index, x);
+        numV++;
+
+    }
+    
+
+    private void shift(int emptyIndex, int fromIndex) {
+        // check the direction of the shift
+        if (emptyIndex < fromIndex) {
             // shift left
-        }
-
-    }
-
-    public int findNearestNull2(int index) {
-        int i = index;
-        int j = index;
-        while (this.arr.get(i) != -1 && this.arr.get(j) != -1) {
-            if (i > 0) {
-                i--;
+            for(int i = emptyIndex; i < fromIndex; i++) {
+                arr.set(i, arr.get(i + 1));
             }
-            if (j < this.lastEleIndex) {
-                j++;
-            }
-        }
-        int result = -1;
-        if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
-            // default i
-            if (index - i <= j - index) {
-                result = i;
-            } else {
-                result = j;
+            arr.set(fromIndex, -1);
+
+        } else if(emptyIndex > fromIndex) {
+            // shift right
+            for(int i = emptyIndex; i > fromIndex; i--) {
+                arr.set(i, arr.get(i - 1));
             }
 
-        } else if (this.arr.get(i) == -1 && this.arr.get(j) != -1) {
-            // front has null
-            result = i;
-        } else if (this.arr.get(i) != -1 && this.arr.get(j) == -1) {
-            // backward has null
-            result = j;
+            arr.set(fromIndex, -1);
         } else {
-            // no null in arr
+            return;
         }
-        return result;
     }
 
-    public int findNearestNull1(int index) {
+    // find the nearest empty index (i.e nearest -1 value cell)
+    public int findNearestEmpty(int index) {
         int i = index;
         int j = index;
         int i_distance = 0;
@@ -96,8 +100,8 @@ public class Ass1 extends Thread {
         boolean isIFind = false;
         boolean isJFind = false;
 
-        while (i <= this.lastEleIndex) {
-            if (this.arr.get(i) == -1) {
+        while (i <= lastEleIndex) {
+            if (arr.get(i) == -1) {
                 isIFind = true;
                 break;
             }
@@ -106,7 +110,7 @@ public class Ass1 extends Thread {
         }
 
         while (j >= 0) {
-            if (this.arr.get(j) == -1) {
+            if (arr.get(j) == -1) {
                 isJFind = true;
                 break;
             }
@@ -132,43 +136,52 @@ public class Ass1 extends Thread {
 
     public void delete(int x) {
         int result = this.binarySearch(x);
-        if (this.arr.get(result) == x) {
-            this.arr.set(result, -1);
+        if (arr.get(result) == x) {
+            arr.set(result, -1);
+            numV--;
         }
+        
     }
 
     private int binarySearch(int tar) {
         if (numV == 0)
             return 0;
         int left = 0;
-        int right = this.lastEleIndex;
+        int right = lastEleIndex;
         while (left <= right) {
             int mid = left + ((right - left) >> 1);
-            while (this.arr.get(mid) == -1) {
+
+            while (arr.get(mid) == -1) {
                 mid++;
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
+                    if (mid < 0) {
+                        return 0;
+                    }
                 }
 
             }
-            if (this.arr.get(mid) == tar) {
+            if (arr.get(mid) == tar) {
                 return mid;
-            } else if (tar < this.arr.get(mid)) {
+            } else if (tar < arr.get(mid)) {
                 right = mid - 1;
             } else {
                 left = mid + 1;
             }
         }
-        System.out.println("left :" + Integer.toString(left));
-        System.out.println("right :" + Integer.toString(right));
+
         return left;
     }
 
     public boolean member(int x) {
         int result = this.binarySearch(x);
-        // System.out.println(result);
-        if (this.arr.get(result) != x) {
+    
+        if (result > lastEleIndex || result < 0) {
+            return false;
+        }
+
+        if (arr.get(result) != x) {
             return false;
         }
         return true;
@@ -177,31 +190,253 @@ public class Ass1 extends Thread {
     public void print_sorted() {
         String result = "";
         result = result + "[";
-        for (int ele : this.arr) {
-            if (ele == -1) {
-                continue;
-            }
+        for (int ele : arr) {
+            // if (ele == -1) {
+            //     continue;
+            // }
             result = result + Integer.toString(ele) + ", ";
         }
         result = result + "]";
         System.out.println(result);
     }
+    
 
-    public static void main(String[] args) {
+    // public static void main(String[] args) {
+    //     Ass1 test = new Ass1(10);
+    //     arr.add(2);
+    //     arr.add(3);
+    //     arr.add(-1);
+    //     arr.add(6);
+    //     arr.add(10);
+    //     numV = 4;
+    //     lastEleIndex = 4;
+    //     test.print_sorted();
+    //     System.out.println(test.member(1));
+    //     System.out.println(test.member(10));
+    //     System.out.println(test.member(6));
+    //     test.insert(8);
+
+
+
+    //     test.print_sorted();
+    // }
+
+
+    //     public static void test1() {
+    //     System.out.println("================test1=============");
+    //     Ass1 test = new Ass1(10);
+    //     arr.add(1);
+    //     arr.add(2);
+    //     arr.add(3);
+    //     arr.add(4);
+    //     numV = 4;
+    //     lastEleIndex = 3;
+    //     test.binarySearch(5);
+    //     test.insert(5);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    // }
+
+    // public static void test2() {
+    //     System.out.println("=========================test2======================");
+    //     Ass1 test = new Ass1(10);
+    //     arr.add(1);
+    //     arr.add(2);
+    //     arr.add(3);
+    //     arr.add(8);
+    //     arr.add(10);
+    //     arr.add(11);
+    //     numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(12);
+    //     test.insert(12);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    // }
+
+    // public static void test3() {
+    //     System.out.println("==============test3=================");
+    //     Ass1 test = new Ass1(10);
+    //     test.arr.add(2);
+    //     test.arr.add(3);
+    //     test.arr.add(4);
+    //     test.arr.add(8);
+    //     test.arr.add(10);
+    //     test.arr.add(11);
+    //     test.numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(1);
+    //     test.insert(1);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    // }
+
+    // public static void test4() {
+    //     System.out.println("==============test4=================");
+    //     Ass1 test = new Ass1(10);
+    //     test.arr.add(1);
+    //     test.arr.add(2);
+    //     test.arr.add(3);
+    //     test.arr.add(8);
+    //     test.arr.add(10);
+    //     test.arr.add(11);
+    //     test.numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(8);
+    //     test.delete(8);
+    //     test.insert(9);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    //     System.out.print("list has -1: ");
+    //     System.out.println(test.arr);
+    // }
+
+    // public static void test5() {
+    //     System.out.println("==============test5=================");
+    //     Ass1 test = new Ass1(10);
+    //     test.arr.add(1);
+    //     test.arr.add(2);
+    //     test.arr.add(3);
+    //     test.arr.add(8);
+    //     test.arr.add(10);
+    //     test.arr.add(11);
+    //     test.numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(8);
+    //     test.delete(8);
+    //     test.delete(10);
+    //     test.insert(9);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    //     System.out.print("list has -1: ");
+    //     System.out.println(test.arr);
+    // }
+    
+    // public static void test6() {
+    //     System.out.println("==============test6=================");
+    //     Ass1 test = new Ass1(10);
+    //     test.arr.add(1);
+    //     test.arr.add(2);
+    //     test.arr.add(3);
+    //     test.arr.add(8);
+    //     test.arr.add(10);
+    //     test.arr.add(11);
+    //     test.numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(8);
+    //     test.delete(8);
+    //     test.delete(10);
+    //     test.delete(11);
+    //     test.insert(9);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    //     System.out.print("list has -1: ");
+    //     System.out.println(test.arr);
+    // }
+
+    //  public static void test7() {
+    //     System.out.println("==============test7=================");
+    //     Ass1 test = new Ass1(10);
+    //     test.arr.add(1);
+    //     test.arr.add(2);
+    //     test.arr.add(4);
+    //     arr.add(8);
+    //     test.arr.add(10);
+    //     test.arr.add(11);
+    //     test.numV = 6;
+    //     test.lastEleIndex = 5;
+    //     test.binarySearch(8);
+    //     test.delete(8);
+    //     test.delete(10);
+    //     test.delete(11);
+    //     test.insert(3);
+    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+    //     test.print_sorted();
+    //     System.out.print("list has -1: ");
+    //     System.out.println(test.arr);
+    // }
+
+    public static void test8() {
+        System.out.println("==============test8=================");
         Ass1 test = new Ass1(10);
-        test.arr.add(0);
-        test.arr.add(2);
-        test.arr.add(-1);
-        test.arr.add(5);
-        test.arr.add(8);
-        test.numV = 4;
-        test.lastEleIndex = 4;
-        // test.delete(0);
-        // test.delete(2);
-        System.out.println(test.member(0));
-        System.out.println(test.member(10));
-        System.out.println(test.member(6));
-
+        arr.add(2);
+        arr.add(3);
+        arr.add(4);
+        arr.add(8);
+        arr.add(10);
+        arr.add(11);
+        //test.arr.add(12);
+        numV = 6;
+        lastEleIndex = 5;
+        test.binarySearch(8);
+        test.delete(2);
+        test.delete(3);
+        test.insert(5);
+        //test.insert(3);
+        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
         test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(arr);
+    }
+
+    public static void test9() {
+        System.out.println("==============test9=================");
+        Ass1 test = new Ass1(10);
+        arr.add(2);
+        arr.add(-1);
+        arr.add(4);
+        arr.add(8);
+        arr.add(-1);
+        arr.add(11);
+        //test.arr.add(12);
+        numV = 4;
+        lastEleIndex = 5;
+        test.binarySearch(12);
+        test.insert(12);
+        //test.insert(3);
+        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(arr);
+    }
+    
+    /*
+     * When arr is full, you have to compress(delete all -1)
+     * 
+     */
+    public static void test10() {
+        
+        System.out.println("==============test10=================");
+        Ass1 test = new Ass1(6);
+        arr.add(2);
+        arr.add(3);
+        arr.add(8);
+        arr.add(-1);
+        arr.add(11);
+        //test.arr.add(12);
+        numV = 4;
+        lastEleIndex = 4;
+        test.binarySearch(12);
+        test.insert(12);
+        
+        test.insert(9);
+        //test.insert(3);
+        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(arr);
+    }
+    public static void main(String[] args) {
+        //Ass1.test1();
+        // test1();
+        // test2();
+        // test3();
+        // test4();
+        // test5();
+        // test6();
+        //test7();
+        test8();
+        // test9();
+        // test10();
     }
 }
