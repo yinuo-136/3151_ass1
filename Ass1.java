@@ -34,7 +34,7 @@ public class Ass1 extends Thread {
         // findNearestNull(index) -> index2
         // x <> get(index)
 
-        if (this.numV == this.lastEleIndex + 1) return; //list is full no empty element
+        if (this.numV == N) return; //list is full no empty element
         int insertIndex = this.binarySearch(x);
         if (this.arr.get(insertIndex) == x) return; // element already exsit, do not insert
         int nullIndex = this.findNearestNull2(insertIndex);
@@ -140,10 +140,12 @@ public class Ass1 extends Thread {
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
-
-            // if (resultIndex == lastEleIndex) {
-            //     lastEleIndex--; //TOBEDISCUSSED
-            // }
+            if (resultIndex == lastEleIndex) {
+                int temp = lastEleIndex;
+                while (this.arr.get(temp) == -1) temp--;
+                this.lastEleIndex = temp;
+            }
+            
         }
     }
     // test.arr.add(-1);0
@@ -213,14 +215,14 @@ public class Ass1 extends Thread {
 
     public static void test1() {
         Ass1 test = new Ass1(10);
+        test.arr.add(-1);
         test.arr.add(2);
-        test.arr.add(3);
-        test.arr.add(4);
+        test.arr.add(-1);
         test.arr.add(8);
         test.arr.add(10);
         test.arr.add(11);
-        test.numV = 6;
+        test.numV = 4;
         test.lastEleIndex = 5;
-        System.out.println(test.binarySearch(12));
+        System.out.println(test.binarySearch(3));
     }
 }
