@@ -1,7 +1,7 @@
 import java.util.concurrent.Semaphore;
 
 public class WriterReaderLock {
-    private Semaphore writerSemaphore = new Semaphore(1);
+    private Semaphore writerSemaphore = new Semaphore(1, true);
     private Semaphore readerSemaphore = new Semaphore(1, true);
     private int activeReaders = 0;
     
@@ -36,7 +36,7 @@ public class WriterReaderLock {
         
         // Wait until all active readers finish writing
         while (activeReaders > 0) {
-            Thread.sleep(100); // Sleep for a short duration
+            Thread.sleep(10); // Sleep for a short duration
         }
     }
     
