@@ -25,6 +25,8 @@ public class Ass1 extends Thread {
     // constructor
     public Ass1(int N) {
         this.N = N;
+        //if N > 0, insert a -1 to the list
+        if (this.N > 0) arr.add(-1);
         this.numV = 0;
         this.lastEleIndex = 0;
     }
@@ -209,6 +211,8 @@ public class Ass1 extends Thread {
     }
 
     public void delete(int x) {
+        //if there's no element in the list, skip(currently)
+        if (numV == 0) return;
         int resultIndex = this.binarySearch(x);
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
@@ -375,12 +379,12 @@ public class Ass1 extends Thread {
     public static void test5() {
         System.out.println("==============test5=================");
         Ass1 test = new Ass1(10);
-        test.arr.add(1);
-        test.arr.add(2);
-        test.arr.add(3);
-        test.arr.add(8);
-        test.arr.add(10);
-        test.arr.add(11);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(8);
+        test.insert(10);
+        test.insert(11);
         test.numV = 6;
         test.lastEleIndex = 5;
         test.binarySearch(8);
@@ -396,19 +400,35 @@ public class Ass1 extends Thread {
     public static void test6() {
         System.out.println("==============test6=================");
         Ass1 test = new Ass1(10);
-        test.arr.add(1);
-        test.arr.add(2);
-        test.arr.add(3);
-        test.arr.add(8);
-        test.arr.add(10);
-        test.arr.add(11);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(8);
+        test.insert(10);
+        test.insert(11);
+        // test.insert(1);
+        // test.insert(2);
+        // test.insert(3);
+        // test.insert(8);
+        // test.insert(10);
+        // test.insert(11);
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
         test.numV = 6;
         test.lastEleIndex = 5;
         test.binarySearch(8);
         test.delete(8);
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
         test.delete(10);
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
         test.delete(11);
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
         test.insert(9);
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
@@ -543,6 +563,23 @@ public class Ass1 extends Thread {
         System.out.print("list has -1: ");
         System.out.println(test.arr);
     }
+
+    public static void test12() {
+        System.out.println("==============test12=================");
+        Ass1 test = new Ass1(1);
+        test.numV = 0;
+        test.lastEleIndex = 0;
+        test.binarySearch(1);
+        test.delete(8);
+        test.insert(8);
+        // test.delete(8);
+        // test.delete(9);
+        // test.delete(8100);
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
     public static void main(String[] args) {
         //Ass1.test1();
         // test1();
@@ -550,11 +587,12 @@ public class Ass1 extends Thread {
         // test3();
         // test4();
         // test5();
-        // test6();
+        test6();
         // test7();
         // test8();
         // test9();
         // test10();
-        test11();
+        // test11();
+        // test12();
     }
 }
