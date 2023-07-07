@@ -34,6 +34,13 @@ public class Ass1 {
             return;
         }
         
+        if (numV == 0) {
+            arr.add(x);
+            lastEleIndex = 0;
+            numV++;
+            return;
+        }
+
         int index = binarySearch(x);
 
         if(index > lastEleIndex) {
@@ -51,7 +58,9 @@ public class Ass1 {
         // check if there exists empty cell
         if (emptyIndex != -1) {
             // do the shift
-            if (arr.get(index) > x) {
+            if (arr.get(index) < x && emptyIndex > index) {
+                index++; 
+            } else if (arr.get(index) > x && emptyIndex < index) {
                 index--;
             }
             shift(emptyIndex, index);
@@ -201,242 +210,18 @@ public class Ass1 {
     }
     
 
-    // public static void main(String[] args) {
-    //     Ass1 test = new Ass1(10);
-    //     arr.add(2);
-    //     arr.add(3);
-    //     arr.add(-1);
-    //     arr.add(6);
-    //     arr.add(10);
-    //     numV = 4;
-    //     lastEleIndex = 4;
-    //     test.print_sorted();
-    //     System.out.println(test.member(1));
-    //     System.out.println(test.member(10));
-    //     System.out.println(test.member(6));
-    //     test.insert(8);
-
-
-
-    //     test.print_sorted();
-    // }
-
-
-    //     public static void test1() {
-    //     System.out.println("================test1=============");
-    //     Ass1 test = new Ass1(10);
-    //     arr.add(1);
-    //     arr.add(2);
-    //     arr.add(3);
-    //     arr.add(4);
-    //     numV = 4;
-    //     lastEleIndex = 3;
-    //     test.binarySearch(5);
-    //     test.insert(5);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    // }
-
-    // public static void test2() {
-    //     System.out.println("=========================test2======================");
-    //     Ass1 test = new Ass1(10);
-    //     arr.add(1);
-    //     arr.add(2);
-    //     arr.add(3);
-    //     arr.add(8);
-    //     arr.add(10);
-    //     arr.add(11);
-    //     numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(12);
-    //     test.insert(12);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    // }
-
-    // public static void test3() {
-    //     System.out.println("==============test3=================");
-    //     Ass1 test = new Ass1(10);
-    //     test.arr.add(2);
-    //     test.arr.add(3);
-    //     test.arr.add(4);
-    //     test.arr.add(8);
-    //     test.arr.add(10);
-    //     test.arr.add(11);
-    //     test.numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(1);
-    //     test.insert(1);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    // }
-
-    // public static void test4() {
-    //     System.out.println("==============test4=================");
-    //     Ass1 test = new Ass1(10);
-    //     test.arr.add(1);
-    //     test.arr.add(2);
-    //     test.arr.add(3);
-    //     test.arr.add(8);
-    //     test.arr.add(10);
-    //     test.arr.add(11);
-    //     test.numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(8);
-    //     test.delete(8);
-    //     test.insert(9);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    //     System.out.print("list has -1: ");
-    //     System.out.println(test.arr);
-    // }
-
-    // public static void test5() {
-    //     System.out.println("==============test5=================");
-    //     Ass1 test = new Ass1(10);
-    //     test.arr.add(1);
-    //     test.arr.add(2);
-    //     test.arr.add(3);
-    //     test.arr.add(8);
-    //     test.arr.add(10);
-    //     test.arr.add(11);
-    //     test.numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(8);
-    //     test.delete(8);
-    //     test.delete(10);
-    //     test.insert(9);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    //     System.out.print("list has -1: ");
-    //     System.out.println(test.arr);
-    // }
-    
-    // public static void test6() {
-    //     System.out.println("==============test6=================");
-    //     Ass1 test = new Ass1(10);
-    //     test.arr.add(1);
-    //     test.arr.add(2);
-    //     test.arr.add(3);
-    //     test.arr.add(8);
-    //     test.arr.add(10);
-    //     test.arr.add(11);
-    //     test.numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(8);
-    //     test.delete(8);
-    //     test.delete(10);
-    //     test.delete(11);
-    //     test.insert(9);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    //     System.out.print("list has -1: ");
-    //     System.out.println(test.arr);
-    // }
-
-    //  public static void test7() {
-    //     System.out.println("==============test7=================");
-    //     Ass1 test = new Ass1(10);
-    //     test.arr.add(1);
-    //     test.arr.add(2);
-    //     test.arr.add(4);
-    //     arr.add(8);
-    //     test.arr.add(10);
-    //     test.arr.add(11);
-    //     test.numV = 6;
-    //     test.lastEleIndex = 5;
-    //     test.binarySearch(8);
-    //     test.delete(8);
-    //     test.delete(10);
-    //     test.delete(11);
-    //     test.insert(3);
-    //     System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-    //     test.print_sorted();
-    //     System.out.print("list has -1: ");
-    //     System.out.println(test.arr);
-    // }
-
-    public static void test8() {
-        System.out.println("==============test8=================");
-        Ass1 test = new Ass1(10);
-        arr.add(2);
-        arr.add(3);
-        arr.add(4);
-        arr.add(8);
-        arr.add(10);
-        arr.add(11);
-        //test.arr.add(12);
-        numV = 6;
-        lastEleIndex = 5;
-        test.binarySearch(8);
-        test.delete(2);
-        test.delete(3);
-        test.insert(5);
-        //test.insert(3);
-        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
-        test.print_sorted();
-        System.out.print("list has -1: ");
-        System.out.println(arr);
-    }
-
-    public static void test9() {
-        System.out.println("==============test9=================");
-        Ass1 test = new Ass1(10);
-        arr.add(2);
-        arr.add(-1);
-        arr.add(4);
-        arr.add(8);
-        arr.add(-1);
-        arr.add(11);
-        //test.arr.add(12);
-        numV = 4;
-        lastEleIndex = 5;
-        test.binarySearch(12);
-        test.insert(12);
-        //test.insert(3);
-        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
-        test.print_sorted();
-        System.out.print("list has -1: ");
-        System.out.println(arr);
-    }
-    
-    /*
-     * When arr is full, you have to compress(delete all -1)
-     * 
-     */
-    public static void test10() {
-        
-        System.out.println("==============test10=================");
-        Ass1 test = new Ass1(6);
-        arr.add(2);
-        arr.add(3);
-        arr.add(8);
-        arr.add(-1);
-        arr.add(11);
-        //test.arr.add(12);
-        numV = 4;
-        lastEleIndex = 4;
-        test.binarySearch(12);
-        test.insert(12);
-        
-        test.insert(9);
-        //test.insert(3);
-        System.out.println("numV:" + numV + "\nlastEleIndex:" + lastEleIndex);
-        test.print_sorted();
-        System.out.print("list has -1: ");
-        System.out.println(arr);
-    }
     public static void main(String[] args) {
-        //Ass1.test1();
-        // test1();
-        // test2();
-        // test3();
-        // test4();
-        // test5();
-        // test6();
-        //test7();
-        test8();
-        // test9();
-        // test10();
+        Ass1 test = new Ass1(10);
+        numV = 0;
+        lastEleIndex = 0;
+        test.insert(8);
+        test.insert(10);
+        test.insert(9);
+        test.insert(1);
+
+
+
+
+        test.print_sorted();
     }
 }
