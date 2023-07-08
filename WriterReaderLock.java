@@ -3,6 +3,7 @@ import java.util.concurrent.Semaphore;
 public class WriterReaderLock {
     private Semaphore writerSemaphore = new Semaphore(1, true);
     private Semaphore readerSemaphore = new Semaphore(1, true);
+    private Semaphore finishReadSem = new Semaphore(1, true);
     private int activeReaders = 0;
     
     public void startReading() throws InterruptedException {
@@ -18,13 +19,13 @@ public class WriterReaderLock {
     
     public void finishReading() throws InterruptedException {
         // Acquire a permit from the reader semaphore
-        readerSemaphore.acquire();
+        finishReadSem.acquire();
         
         // Decrease the active readers count
         activeReaders--;
         
         // Release the reader semaphore
-        readerSemaphore.release();
+        finishReadSem.release();
     }
     
     public void startWriting() throws InterruptedException {
@@ -36,7 +37,7 @@ public class WriterReaderLock {
         
         // Wait until all active readers finish writing
         while (activeReaders > 0) {
-            Thread.sleep(10); // Sleep for a short duration
+            Thread.sleep(100); // Sleep for a short duration
         }
     }
     
