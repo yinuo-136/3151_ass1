@@ -131,6 +131,7 @@ public class Ass1 extends Thread {
         if (this.numV == 0) {
             return;
         }
+        // arr length is 1 and first item not null return
         if (this.numV == 1 && this.arr.get(0) != -1) {
             return;
         }
@@ -561,9 +562,9 @@ public class Ass1 extends Thread {
         test.insert(9);
         test.insert(8);
         test.insert(8100);
-        // test.delete(8);
-        // test.delete(9);
-        // test.delete(8100);
+        test.delete(8);
+        test.delete(9);
+        test.delete(8100);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
