@@ -6,20 +6,13 @@ public class Ass1 {
 
     // size of bounded arr
     static int N;
-    // num of ele
+    // num of actual element in the array
     static int numV;
     // last ele index
     static int lastEleIndex;
-    //
-    static ArrayList<Integer> arr = new ArrayList<Integer>();
-    // index|value ??
-    // ArrayList<String> cp_Arr;
 
-    // concurrency
-    // bool isFull;
-    // if cv1 = 0, do shift. init val = N/4
-    int cv1;
-    int shiftRatio = N / 4;
+    // the array containing data
+    static ArrayList<Integer> arr = new ArrayList<Integer>();
 
     // constructor
     public Ass1(int n) {
@@ -34,6 +27,7 @@ public class Ass1 {
             return;
         }
         
+        // check if the array is empty
         if (numV == 0) {
             arr.add(x);
             lastEleIndex = 0;
@@ -43,16 +37,18 @@ public class Ass1 {
 
         int index = binarySearch(x);
 
-        if(index > lastEleIndex) {
+        // check duplication
+        if (arr.get(index) == x) {
+            return;
+        }
+
+        if(index > lastEleIndex && lastEleIndex < N - 1) {
             arr.add(x);
             lastEleIndex++;
             numV++;
             return;
         }
-        // check duplication
-        if (arr.get(binarySearch(x)) == x) {
-            return;
-        }
+        
 
         int emptyIndex = findNearestEmpty(index);
         // check if there exists empty cell
@@ -143,6 +139,20 @@ public class Ass1 {
 
     }
 
+    // compact the array when there are too many empty slots(i.e -1 inside the array)
+    public void compact() {
+        // arr is null, do nothing
+        if (numV == 0) {
+            return;
+        }
+        if (numV == 1 && arr.get(0) != -1) {
+            return;
+        }
+        arr.removeIf(n -> (n == -1));
+        lastEleIndex = arr.size() - 1;
+        
+    }
+
     public void delete(int x) {
         int result = this.binarySearch(x);
         if (arr.get(result) == x) {
@@ -198,14 +208,19 @@ public class Ass1 {
 
     public void print_sorted() {
         String result = "";
-        result = result + "[";
+        result = result + "{";
+        int index = 0;
         for (int ele : arr) {
             // if (ele == -1) {
             //     continue;
             // }
-            result = result + Integer.toString(ele) + ", ";
+            result = result + Integer.toString(ele);
+            if (index < lastEleIndex) {
+                result = result + ", ";
+            }
+            index++;
         }
-        result = result + "]";
+        result = result + "}";
         System.out.println(result);
     }
     
@@ -219,6 +234,11 @@ public class Ass1 {
         test.insert(9);
         test.insert(1);
 
+        test.delete(8);
+        test.delete(10);
+
+        System.out.println(numV);
+        System.out.println(lastEleIndex);
 
 
 
