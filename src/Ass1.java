@@ -1,4 +1,5 @@
 package src;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
@@ -13,7 +14,8 @@ public class Ass1 extends Thread {
     // last ele index
     int lastEleIndex;
     //
-    ArrayList<Integer> arr = new ArrayList<Integer>();
+    public static ArrayList<Integer> arr = new ArrayList<Integer>();
+    public static ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
     // index|value ??
     // ArrayList<String> cp_Arr;
 
@@ -30,9 +32,14 @@ public class Ass1 extends Thread {
         if (this.N > 0) arr.add(-1);
         this.numV = 0;
         this.lastEleIndex = 0;
+        //init lock list
+        for (int i = 0; i < N; i++) {
+            Ass1Lock newLock = new Ass1Lock();
+            semArr.add(newLock);
+        }
     }
 
-    public void insert(int x) {
+    public void insert(int x) throws InterruptedException {
         // binaryS(x) ->index
         // findNearestNull(index) -> index2
         // x <> get(index)
@@ -263,7 +270,7 @@ public class Ass1 extends Thread {
 
     }
 
-    public void delete(int x) {
+    public void delete(int x) throws InterruptedException {
         //if there's no element in the list, skip(currently)
         if (numV == 0) return;
         int resultIndex = this.binarySearch(x);
@@ -294,25 +301,32 @@ public class Ass1 extends Thread {
     // test.arr.add(8);3
     // test.arr.add(-1);4
     // test.arr.add(10);5
-    public int binarySearch(int tar) {
+    public int binarySearch(int tar) throws InterruptedException {
+
         if (numV == 0)
             return 0;
+        
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
             int mid = left + ((right - left) >> 1);
-            while (this.arr.get(mid) == -1) {
+            this.semArr.get(mid).startReading();
+            while ( this.arr.get(mid) == -1) {
+                
                 mid++;
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
-                }
+                } 
                 if (mid < 0) {
                     System.out.println("origin");
                     return 0; // in case mid goes out of left bound
                 }
 
+                this.semArr.get(mid).finishReading();
+                this.semArr.get(mid).startReading();
             }
+
             if (this.arr.get(mid) == tar) {
                 return mid;
             } else if (tar < this.arr.get(mid)) {
@@ -320,21 +334,44 @@ public class Ass1 extends Thread {
             } else {
                 left = mid + 1;
             }
+            // return before the loop finish so that we don't finish reading 
+            if (left > right) {
+                System.out.println("left :" + Integer.toString(left));
+                System.out.println("right :" + Integer.toString(right));
+                return left;
+            }
+            this.semArr.get(mid).finishReading();
         }
-        System.out.println("left :" + Integer.toString(left));
-        System.out.println("right :" + Integer.toString(right));
+        // System.out.println("left :" + Integer.toString(left));
+        // System.out.println("right :" + Integer.toString(right));
         return left;
     }
 
-    public boolean member(int x) {
+    //start reading the arr from index start to the end
+    private synchronized void startReadingBlocks(int start, int end) throws InterruptedException {
+        for (int i = start; i <= end; i++) {
+            this.semArr.get(i).startReading();
+        }
+    }
+
+    public boolean member(int x) throws InterruptedException {
         int result = this.binarySearch(x);
+        
+
         // System.out.println(result);
-        if (result > lastEleIndex)
-            return false;
-        if (this.arr.get(result) != x) {
+        if (result > lastEleIndex) {
+            this.semArr.get(result).finishReading();
             return false;
         }
+        
+        if (this.arr.get(result) != x) {
+            this.semArr.get(result).finishReading();
+            return false;
+        }
+
+        this.semArr.get(result).finishReading();
         return true;
+
     }
 
     public void print_sorted() {

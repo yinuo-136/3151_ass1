@@ -1,8 +1,32 @@
 package src;
 
+
 public class Tests {
+
+    public static class memberReader extends Thread {
+
+        Ass1 ass1;
+        
+        public memberReader (Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+
+            for (int i = 0; i < 10; i++) {
+                System.out.println(this + "member: " + i);
+                    try {
+                        ass1.member(i);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+
+        }
+    }
     
-    public static void test1() {
+    public static void test1() throws InterruptedException {
         System.out.println("================test1=============");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -19,7 +43,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test2() {
+    public static void test2() throws InterruptedException {
         System.out.println("=========================test2======================");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -41,7 +65,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test3() {
+    public static void test3() throws InterruptedException {
         System.out.println("==============test3=================");
         Ass1 test = new Ass1(10);
         test.insert(2);
@@ -58,7 +82,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test4() {
+    public static void test4() throws InterruptedException {
         System.out.println("==============test4=================");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -76,7 +100,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test5() {
+    public static void test5() throws InterruptedException {
         System.out.println("==============test5=================");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -95,7 +119,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test6() {
+    public static void test6() throws InterruptedException {
         System.out.println("==============test6=================");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -131,7 +155,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test7() {
+    public static void test7() throws InterruptedException {
         System.out.println("==============test7=================");
         Ass1 test = new Ass1(10);
         test.insert(1);
@@ -153,7 +177,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test8() {
+    public static void test8() throws InterruptedException {
         System.out.println("==============test8=================");
         Ass1 test = new Ass1(10);
         test.insert(2);
@@ -183,7 +207,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test9() {
+    public static void test9() throws InterruptedException {
         System.out.println("==============test9=================");
         Ass1 test = new Ass1(10);
         test.insert(2);
@@ -210,7 +234,7 @@ public class Tests {
      * When arr is full, you have to compress(delete all -1)
      * 
      */
-    public static void test10() {
+    public static void test10() throws InterruptedException {
 
         System.out.println("==============test10=================");
         Ass1 test = new Ass1(6);
@@ -233,7 +257,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test11() {
+    public static void test11() throws InterruptedException {
         System.out.println("==============test11=================");
         Ass1 test = new Ass1(10);
         test.insert(4);
@@ -261,7 +285,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test12() {
+    public static void test12() throws InterruptedException {
         System.out.println("==============test12=================");
         Ass1 test = new Ass1(1);
         test.numV = 0;
@@ -278,7 +302,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test13() {
+    public static void test13() throws InterruptedException {
         System.out.println("==============test13 COMPRESS=================");
         //COMPRESS TEST
         Ass1 test = new Ass1(10);
@@ -301,7 +325,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test14() {
+    public static void test14() throws InterruptedException {
         System.out.println("==============test14 COMPRESS=================");
         //COMPRESS TEST
         Ass1 test = new Ass1(3);
@@ -324,7 +348,7 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void test15() {
+    public static void test15() throws InterruptedException {
         System.out.println("==============test15 COMPRESS=================");
         //COMPRESS TEST
         Ass1 test = new Ass1(3);
@@ -344,8 +368,35 @@ public class Tests {
         System.out.println(test.arr);
     }
 
-    public static void main(String[] args) {
-        // Ass1.test1();
+    public static void test16() throws InterruptedException {
+        System.out.println("==============test16 CONCURRENCY MEMBER=================");
+        //COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        memberReader m1 = new memberReader(test);
+        memberReader m2 = new memberReader(test);
+
+        m1.start();
+        m2.start();
+
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        // test1();
         // test1();
         // test2();
         // test3();
@@ -357,9 +408,12 @@ public class Tests {
         // test9();
         // test10();
         // test11();
-        //test12();
-        test13();
-        test14();
-        test15();
+        // test12();
+        // test13();
+        // test14();
+        // test15();
+        test16();
     }
 }
+
+

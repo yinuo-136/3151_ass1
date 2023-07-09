@@ -1,7 +1,7 @@
 package src;
 import java.util.concurrent.Semaphore;
 
-public class WriterReaderLock {
+public class Ass1Lock {
     
     private Semaphore writeSem = new Semaphore(1, true);
     private Semaphore readSem = new Semaphore(1, true);
