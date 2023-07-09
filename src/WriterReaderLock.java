@@ -2,56 +2,57 @@ package src;
 import java.util.concurrent.Semaphore;
 
 public class WriterReaderLock {
-    private Semaphore writerSemaphore = new Semaphore(1, true);
-    private Semaphore readerSemaphore = new Semaphore(1, true);
-    private Semaphore finishReadSem = new Semaphore(1, true);
-    private Semaphore startwriteSem = new Semaphore(0, true);
-    private int activeReaders = 0;
-    private boolean isWantToWrite = false;
+    
+    private Semaphore writeSem = new Semaphore(1, true);
+    private Semaphore readSem = new Semaphore(1, true);
+    private Semaphore endRead = new Semaphore(1, true);
+    private Semaphore beginWrite = new Semaphore(0, true);
+    private int readerCount = 0;
+    private boolean writeLock = false;
     
     public void startReading() throws InterruptedException {
         // Acquire a permit from the reader semaphore
-        readerSemaphore.acquire();
+        readSem.acquire();
         
         // Increase the active readers count
-        activeReaders++;
+        readerCount++;
         
         // Release the reader semaphore
-        readerSemaphore.release();
+        readSem.release();
     }
     
     public void finishReading() throws InterruptedException {
         // Acquire a permit from the reader semaphore
-        finishReadSem.acquire();
+        endRead.acquire();
         
         // Decrease the active readers count
-        activeReaders--;
+        readerCount--;
         
-        if (activeReaders == 0 && isWantToWrite == true) {
-            startwriteSem.release();
+        if (readerCount == 0 && writeLock == true) {
+            beginWrite.release();
         }
         // Release the reader semaphore
-        finishReadSem.release();
+        endRead.release();
     }
     
     public void startWriting() throws InterruptedException {
         // Acquire a permit from the writer semaphore
-        writerSemaphore.acquire();
+        writeSem.acquire();
 
         // Acquire a reader semaphore
-        readerSemaphore.acquire();
+        readSem.acquire();
         
         // Wait until all active readers finish writing
-        if (activeReaders > 0) {
-            isWantToWrite = true;
-            startwriteSem.acquire();
+        if (readerCount > 0) {
+            writeLock = true;
+            beginWrite.acquire();
         }
     }
     
     public void finishWriting() {
-        isWantToWrite = false;
+        writeLock = false;
         // Release the writer semaphore
-        writerSemaphore.release();
-        readerSemaphore.release();
+        writeSem.release();
+        readSem.release();
     }
 }
