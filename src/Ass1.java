@@ -280,12 +280,12 @@ public class Ass1 {
 
     public void delete(int x) throws InterruptedException {
         //if there's no element in the list, skip(currently)
-        System.out.println("========================before read IN DELETE=========================" + " IDX:" );
-        print_Sem_arr();
+        // System.out.println("========================before read IN DELETE=========================" + " IDX:" );
+        // print_Sem_arr();
         int resultIndex = this.binarySearch(x);
         //this.semArr.get(resultIndex).startWriting(); --deadlock
-        System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
-        print_Sem_arr();
+        // System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
+        // print_Sem_arr();
         this.semArr.get(resultIndex).finishReading();
         //System.out.println("========================finish read=========================");
         //other thread may affect the content on resultIndex --PROBLEM
@@ -295,6 +295,13 @@ public class Ass1 {
         print_Sem_arr();
         this.semArr.get(resultIndex).startWriting();
         System.out.println("========================start write=========================" + " IDX:" + resultIndex);
+        
+        if (this.lastEleIndex < resultIndex) {
+            //only happen in concurrency
+            this.semArr.get(resultIndex).finishWriting();
+            return;
+        }
+        
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
@@ -413,28 +420,28 @@ public class Ass1 {
     }
 
     public boolean member(int x) throws InterruptedException {
-        System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
-        print_Sem_arr();
+        // System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
+        // print_Sem_arr();
         int result = this.binarySearch(x);
-        System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
-        print_Sem_arr();
+        // System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
+        // print_Sem_arr();
         //print_Sem_arr();
 
         // System.out.println(result);
         if (result > lastEleIndex) {
-            System.out.println(result + " left eventually finish");
+            //System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
             //print_Sem_arr();
             return false;
         }
         
         if (this.arr.get(result) != x) {
-            System.out.println(result + " left eventually finish");
+            //System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
             //print_Sem_arr();
             return false;
         }
-        System.out.println(result + " left eventually finish");
+        //System.out.println(result + " left eventually finish");
         this.semArr.get(result).finishReading();
         //print_Sem_arr();
         return true;

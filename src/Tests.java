@@ -4,11 +4,11 @@ import java.util.Random;
 
 public class Tests {
 
-    public static class MemberReader extends Thread {
+    public static class MemberRandomReader extends Thread {
 
         Ass1 ass1;
         
-        public MemberReader (Ass1 a) {
+        public MemberRandomReader (Ass1 a) {
             this.ass1 = a;
         }
 
@@ -29,11 +29,59 @@ public class Tests {
         }
     }
 
+    public static class MemberReader extends Thread {
+
+        Ass1 ass1;
+        
+        public MemberReader (Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            for (int i = 0; i < 10; i++) {
+                    try {
+                        System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+            
+
+        }
+    }
+
     public static class DeleteWriter extends Thread {
 
         Ass1 ass1;
         
         public DeleteWriter(Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            for (int i = 0; i < 10; i++) {
+                    try {
+                            System.out.println(this + "delete: " + i);
+                            ass1.delete(i);
+                        
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+            
+
+        }
+    }
+
+    public static class DeleteRandomWriter extends Thread {
+
+        Ass1 ass1;
+        
+        public DeleteRandomWriter(Ass1 a) {
             this.ass1 = a;
         }
 
@@ -413,8 +461,8 @@ public class Tests {
         test.insert(8);
         test.insert(9);
 
-        MemberReader m1 = new MemberReader(test);
-        MemberReader m2 = new MemberReader(test);
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        MemberRandomReader m2 = new MemberRandomReader(test);
 
         m1.start();
         m2.start();
@@ -441,8 +489,11 @@ public class Tests {
         test.insert(9);
 
         test.print_Sem_arr();
-        MemberReader m1 = new MemberReader(test);
-        DeleteWriter m2 = new DeleteWriter(test);
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        DeleteRandomWriter m2 = new DeleteRandomWriter(test);
 
         
         m2.start();
