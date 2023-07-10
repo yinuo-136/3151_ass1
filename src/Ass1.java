@@ -328,10 +328,9 @@ public class Ass1 {
         while (left <= right) {
 
             int mid = left + ((right - left) >> 1);
-            int oldMid = mid;
             this.semArr.get(mid).startReading();
             while (this.arr.get(mid) == -1) {
-
+                int oldMid = mid;
                 mid++;
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
