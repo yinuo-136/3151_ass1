@@ -1,4 +1,5 @@
 package src;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
@@ -15,7 +16,7 @@ public class Ass1 {
     int lastEleIndex;
     //
     public static ArrayList<Integer> arr = new ArrayList<Integer>();
-    public static ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+    public static ArrayList<Ass1Lock> semArr = new ArrayList<Ass1Lock>();
     // index|value ??
     // ArrayList<String> cp_Arr;
 
@@ -28,11 +29,12 @@ public class Ass1 {
     // constructor
     public Ass1(int N) {
         this.N = N;
-        //if N > 0, insert a -1 to the list
-        if (this.N > 0) arr.add(-1);
+        // if N > 0, insert a -1 to the list
+        if (this.N > 0)
+            arr.add(-1);
         this.numV = 0;
         this.lastEleIndex = 0;
-        //init lock list
+        // init lock list
         for (int i = 0; i < N; i++) {
             Ass1Lock newLock = new Ass1Lock();
             semArr.add(newLock);
@@ -56,7 +58,6 @@ public class Ass1 {
             if (this.arr.get(insertIndex) == x)
                 return;
         }
-
 
         // x is the biggest element, append to the last position
         if (insertIndex > lastEleIndex) {
@@ -94,7 +95,6 @@ public class Ass1 {
                         this.arr.set(i, previous_ele);
                         previous_ele = temp;
                     }
-
 
                 }
                 this.arr.set(insertIndex, x);
@@ -139,39 +139,39 @@ public class Ass1 {
     }
 
     /*
-    public void compress() {
-        // arr is null, do nothing
-        if (this.numV == 0) {
-            return;
-        }
-        if (this.numV == 1 && this.arr.get(0) != -1) {
-            return;
-        }
-        int oldLastEleIndex = this.lastEleIndex;
-        int i = 1;
-        while (i <= oldLastEleIndex) {
-            
-            int curItem = this.arr.get(i);
-            if (curItem != -1) {
-                int j = i - 1;
-                if (this.arr.get(j) == -1) {
-                    this.lastEleIndex--;
-                }
-                while (j >= 0 && this.arr.get(j) == -1) {
-                    this.arr.set(j, curItem);
-                    this.arr.set(j+1,-1);
-                    j--;
-                }               
-            }
-            i++;
-        }
-        System.out.println("a: " + this.lastEleIndex);
-        System.out.println(oldLastEleIndex);
-        for (int k = oldLastEleIndex; k > lastEleIndex; k --) {
-            this.arr.remove(k);
-        }
-    }
-    */
+     * public void compress() {
+     * // arr is null, do nothing
+     * if (this.numV == 0) {
+     * return;
+     * }
+     * if (this.numV == 1 && this.arr.get(0) != -1) {
+     * return;
+     * }
+     * int oldLastEleIndex = this.lastEleIndex;
+     * int i = 1;
+     * while (i <= oldLastEleIndex) {
+     * 
+     * int curItem = this.arr.get(i);
+     * if (curItem != -1) {
+     * int j = i - 1;
+     * if (this.arr.get(j) == -1) {
+     * this.lastEleIndex--;
+     * }
+     * while (j >= 0 && this.arr.get(j) == -1) {
+     * this.arr.set(j, curItem);
+     * this.arr.set(j+1,-1);
+     * j--;
+     * }
+     * }
+     * i++;
+     * }
+     * System.out.println("a: " + this.lastEleIndex);
+     * System.out.println(oldLastEleIndex);
+     * for (int k = oldLastEleIndex; k > lastEleIndex; k --) {
+     * this.arr.remove(k);
+     * }
+     * }
+     */
 
     public void compress2() {
         // arr is null, do nothing
@@ -183,7 +183,7 @@ public class Ass1 {
         }
         this.arr.removeIf(n -> (n == -1));
         this.lastEleIndex = this.arr.size() - 1;
-        
+
     }
 
     private int findNearestNull2(int index) {
@@ -271,22 +271,27 @@ public class Ass1 {
     }
 
     public void delete(int x) throws InterruptedException {
-        //if there's no element in the list, skip(currently)
+        // if there's no element in the list, skip(currently)
         int resultIndex = this.binarySearch(x);
-        //this.semArr.get(resultIndex).startWriting(); --deadlock
+        // this.semArr.get(resultIndex).startWriting(); --deadlock
+        System.out.println("reader count277: " + resultIndex + "     " + this.semArr.get(resultIndex).readerCount);
+        System.out.println("writer lock278: " + resultIndex + "     " + this.semArr.get(resultIndex).writeLock);
         this.semArr.get(resultIndex).finishReading();
-        
-        //other thread may affect the content on resultIndex --PROBLEM
 
-        if (numV == 0) return;
+        // other thread may affect the content on resultIndex --PROBLEM
 
+        if (numV == 0)
+            return;
+        System.out.println("reader count285: " + resultIndex + "     " + this.semArr.get(resultIndex).readerCount);
+        System.out.println("writer lock286: " + resultIndex + "     " + this.semArr.get(resultIndex).writeLock);
+        System.out.println("======================== b4 start write=========================");
         this.semArr.get(resultIndex).startWriting();
         System.out.println("========================start write=========================");
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
             if (resultIndex == lastEleIndex) {
-                startWritingBlocks(0, resultIndex - 1);  
+                startWritingBlocks(0, resultIndex - 1);
                 int temp = lastEleIndex;
                 while (this.arr.get(temp) == -1) {
                     if (temp == 0) {
@@ -298,7 +303,7 @@ public class Ass1 {
                     temp--;
 
                 }
-                //this.lastEleIndex = temp;
+                // this.lastEleIndex = temp;
                 endWritingBlocks(0, resultIndex - 1);
                 this.lastEleIndex = temp;
             }
@@ -306,9 +311,6 @@ public class Ass1 {
         }
         this.semArr.get(resultIndex).finishWriting();
     }
-
-
-    
 
     // test.arr.add(-1);0
     // test.arr.add(4);1
@@ -320,51 +322,59 @@ public class Ass1 {
 
         if (numV == 0)
             return 0;
-        
+
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
-            
+
             int mid = left + ((right - left) >> 1);
             int oldMid = mid;
             this.semArr.get(mid).startReading();
-            while ( this.arr.get(mid) == -1) {
-                
+            while (this.arr.get(mid) == -1) {
+
                 mid++;
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
-                } 
+                }
                 if (mid < 0) {
                     System.out.println("origin");
                     return 0; // in case mid goes out of left bound
                 }
 
-                this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
+                this.semArr.get(oldMid).finishReading(); // -- PROBLEM HERE
                 this.semArr.get(mid).startReading();
             }
+            // mid is reading, old finish
 
             if (this.arr.get(mid) == tar) {
+                // finish outside
                 return mid;
             } else if (tar < this.arr.get(mid)) {
                 right = mid - 1;
             } else {
                 left = mid + 1;
             }
-            // return before the loop finish so that we don't finish reading 
+            // return before the loop finish so that we don't finish reading
             if (left > right) {
                 System.out.println("left :" + Integer.toString(left));
                 System.out.println("right :" + Integer.toString(right));
+                this.semArr.get(mid).finishReading();
+                System.out.println("mid361: " + mid);
+                this.semArr.get(left).startReading();
+                // finish out side
+                System.out.println("left363: " + left);
                 return left;
             }
-            this.semArr.get(oldMid).finishReading(); // -- PROBLEM HERE
+            this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));
         // System.out.println("right :" + Integer.toString(right));
+        System.out.println("==================here==================");
         return left;
     }
 
-    //start reading the arr from index start to the end
+    // start reading the arr from index start to the end
     private synchronized void startReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).startReading();
@@ -391,20 +401,23 @@ public class Ass1 {
 
     public boolean member(int x) throws InterruptedException {
         int result = this.binarySearch(x);
-        
 
         // System.out.println(result);
         if (result > lastEleIndex) {
             this.semArr.get(result).finishReading();
             return false;
         }
-        
+
         if (this.arr.get(result) != x) {
             this.semArr.get(result).finishReading();
             return false;
         }
+        System.out.println("index: " + result + "   " + "reader count411: " + this.semArr.get(result).readerCount);
+        System.out.println("index: " + result + "   " + "writer lock412: " + this.semArr.get(result).writeLock);
 
         this.semArr.get(result).finishReading();
+        System.out.println("index: " + result + "   " + "reader count413: " + this.semArr.get(result).readerCount);
+        System.out.println("index: " + result + "   " + "writer lock414: " + this.semArr.get(result).writeLock);
         return true;
 
     }

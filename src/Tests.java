@@ -1,28 +1,26 @@
 package src;
 
-
 public class Tests {
 
     public static class MemberReader extends Thread {
 
         Ass1 ass1;
-        
-        public MemberReader (Ass1 a) {
+
+        public MemberReader(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                
-                    try {
-                        System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
+                try {
+                    System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
 
         }
     }
@@ -30,30 +28,28 @@ public class Tests {
     public static class DeleteWriter extends Thread {
 
         Ass1 ass1;
-        
+
         public DeleteWriter(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                
-                    try {
-                        
-                            System.out.println(this + "delete: " + i);
-                            ass1.delete(i);
-                        
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+
+                try {
+                    // System.out.println(this.ass1.semArr);
+                    System.out.println(this + "delete: " + i);
+                    ass1.delete(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
 
         }
     }
-    
+
     public static void test1() throws InterruptedException {
         System.out.println("================test1=============");
         Ass1 test = new Ass1(10);
@@ -209,7 +205,7 @@ public class Tests {
         System.out.println("==============test8=================");
         Ass1 test = new Ass1(10);
         test.insert(2);
-        
+
         test.insert(3);
         test.insert(4);
         test.insert(8);
@@ -332,7 +328,7 @@ public class Tests {
 
     public static void test13() throws InterruptedException {
         System.out.println("==============test13 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(2);
         test.insert(3);
@@ -343,9 +339,8 @@ public class Tests {
         test.delete(2);
         test.delete(3);
         test.delete(4);
-        //test.compress();
+        // test.compress();
         test.compress2();
-
 
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -355,7 +350,7 @@ public class Tests {
 
     public static void test14() throws InterruptedException {
         System.out.println("==============test14 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(3);
         test.insert(2);
         test.insert(3);
@@ -368,7 +363,7 @@ public class Tests {
         test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        //test.compress();
+        // test.compress();
         test.compress2();
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -378,7 +373,7 @@ public class Tests {
 
     public static void test15() throws InterruptedException {
         System.out.println("==============test15 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(3);
         test.insert(2);
         test.insert(3);
@@ -386,10 +381,10 @@ public class Tests {
 
         test.delete(2);
         test.delete(3);
-       
-        //test.compress();
+
+        // test.compress();
         test.compress2();
-        //test.compress2();
+        // test.compress2();
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
@@ -398,7 +393,7 @@ public class Tests {
 
     public static void test16() throws InterruptedException {
         System.out.println("==============test16 CONCURRENCY MEMBER=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(0);
         test.insert(1);
@@ -425,7 +420,7 @@ public class Tests {
 
     public static void test17() throws InterruptedException {
         System.out.println("==============test17 CONCURRENCY MEMBER AND DELETE=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(0);
         test.insert(1);
@@ -444,9 +439,8 @@ public class Tests {
         m1.start();
         m2.start();
 
-        
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
-        test.print_sorted();
+        // test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
     }
@@ -468,9 +462,7 @@ public class Tests {
         // test13();
         // test14();
         // test15();
-        //test16();
+        // test16();
         test17();
     }
 }
-
-
