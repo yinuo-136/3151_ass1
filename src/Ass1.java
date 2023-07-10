@@ -37,6 +37,8 @@ public class Ass1 {
             Ass1Lock newLock = new Ass1Lock();
             semArr.add(newLock);
         }
+        System.out.println("before start");
+        print_Sem_arr();
     }
 
     public void insert(int x) throws InterruptedException {
@@ -48,7 +50,9 @@ public class Ass1 {
         if (this.numV == N)
             return;
         int insertIndex = this.binarySearch(x);
+        this.semArr.get(insertIndex).finishReading();
 
+        
         if (insertIndex == lastEleIndex + 1) {
 
         } else {
@@ -272,16 +276,21 @@ public class Ass1 {
 
     public void delete(int x) throws InterruptedException {
         //if there's no element in the list, skip(currently)
+        System.out.println("========================before read IN DELETE=========================" + " IDX:" );
+        print_Sem_arr();
         int resultIndex = this.binarySearch(x);
         //this.semArr.get(resultIndex).startWriting(); --deadlock
+        System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
+        print_Sem_arr();
         this.semArr.get(resultIndex).finishReading();
         //System.out.println("========================finish read=========================");
         //other thread may affect the content on resultIndex --PROBLEM
 
         if (numV == 0) return;
-
+        System.out.println("========================before write=========================" + " IDX:"  + resultIndex);
+        print_Sem_arr();
         this.semArr.get(resultIndex).startWriting();
-        System.out.println("========================start write=========================");
+        System.out.println("========================start write=========================" + " IDX:" + resultIndex);
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
@@ -305,6 +314,7 @@ public class Ass1 {
 
         }
         this.semArr.get(resultIndex).finishWriting();
+        System.out.println("========================finish write=========================");
     }
 
 
@@ -326,11 +336,12 @@ public class Ass1 {
         while (left <= right) {
             
             int mid = left + ((right - left) >> 1);
-            
+            System.out.println(mid + " Start read");
             this.semArr.get(mid).startReading();
             while ( this.arr.get(mid) == -1) {
-                int oldMid = mid;
-                mid++;
+                //System.out.println("IMHERE---------------");
+                int oldMid = mid; // 0
+                mid++; // 1
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
@@ -339,8 +350,9 @@ public class Ass1 {
                     System.out.println("origin: mid = " + mid);
                     return 0; // in case mid goes out of left bound
                 }
-
+                System.out.println(oldMid + "o finish read");
                 this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
+                System.out.println(mid + "o start read");
                 this.semArr.get(mid).startReading();
             }
 
@@ -355,11 +367,12 @@ public class Ass1 {
             if (left > right) {
                 System.out.println("left :" + Integer.toString(left));
                 System.out.println("right :" + Integer.toString(right));
+                System.out.println(mid + " goes out, wait for finish");
                 this.semArr.get(mid).finishReading();
                 this.semArr.get(left).startReading();
                 return left;
             }
-            
+            System.out.println(mid + " finish");
             this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));
@@ -394,23 +407,40 @@ public class Ass1 {
     }
 
     public boolean member(int x) throws InterruptedException {
+        System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
+        print_Sem_arr();
         int result = this.binarySearch(x);
-        
+        System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
+        print_Sem_arr();
+        //print_Sem_arr();
 
         // System.out.println(result);
         if (result > lastEleIndex) {
+            System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
+            //print_Sem_arr();
             return false;
         }
         
         if (this.arr.get(result) != x) {
+            System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
+            //print_Sem_arr();
             return false;
         }
-
+        System.out.println(result + " left eventually finish");
         this.semArr.get(result).finishReading();
+        //print_Sem_arr();
         return true;
 
+    }
+
+    public synchronized void print_Sem_arr() {
+        int i = 0;
+        for (Ass1Lock l : semArr) {
+            System.out.println("index: " + i + " readerCount: " + l.readerCount + " writeLock: " + l.writeLock);
+            i++;
+        }
     }
 
     public void print_sorted() throws InterruptedException {

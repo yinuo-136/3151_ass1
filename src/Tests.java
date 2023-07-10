@@ -14,7 +14,7 @@ public class Tests {
         @Override
         public void run() {
             
-            for (int i = 0; i < 10; i++) {
+            for (int i = 0; i < 1; i++) {
                 
                     try {
                         System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
