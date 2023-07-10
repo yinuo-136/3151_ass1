@@ -14,8 +14,12 @@ public class Ass1 {
     // last ele index
     int lastEleIndex;
     //
-    public static ArrayList<Integer> arr = new ArrayList<Integer>();
-    public static ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+    // public static ArrayList<Integer> arr = new ArrayList<Integer>();
+    // public static ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+
+    public ArrayList<Integer> arr = new ArrayList<Integer>();
+    public ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+
     // index|value ??
     // ArrayList<String> cp_Arr;
 
@@ -56,13 +60,15 @@ public class Ass1 {
         // System.out.println("========================after FINISH reading=========================" + "\nIDX:" + insertIndex );
         // print_Sem_arr();
 
-
+        this.semArr.get(insertIndex).startWriting();
         if (insertIndex == lastEleIndex + 1) {
 
         } else {
             // element already exsit, do not insert
-            if (this.arr.get(insertIndex) == x)
+            if (this.arr.get(insertIndex) == x) {
+                this.semArr.get(insertIndex).finishWriting();
                 return;
+            }
         }
 
 
@@ -73,11 +79,14 @@ public class Ass1 {
                 this.numV++;
                 this.arr.add(x);
                 this.lastEleIndex++;
+                this.semArr.get(insertIndex).finishWriting();
                 return;
             } else {
                 // there's -1 before insertIndex, we insert at the lastIndex
                 // System.out.println("xxxxxxxxxxxhahaxxxxxxxxxxx");
+                this.semArr.get(insertIndex).finishWriting();
                 insertIndex = this.lastEleIndex;
+                this.semArr.get(insertIndex).startWriting();
             }
         }
 
@@ -85,6 +94,7 @@ public class Ass1 {
         int nullIndex = this.findNearestNull2(insertIndex);
         System.out.println("insertidx:" + insertIndex);
         System.out.println("nullidx:" + nullIndex);
+        //7/11 ------ 直接锁insert 到 nullIndex, 锁startWriting, shift完release writing 锁
         if (insertIndex < nullIndex) {
             // RIGHT SHIFT
             if (x < this.arr.get(insertIndex)) {
@@ -193,27 +203,71 @@ public class Ass1 {
         this.lastEleIndex = this.arr.size() - 1;
         
     }
+    /*
+        锁上别解锁，找到nearest null 了以后 把不需要锁的解锁
 
-    private int findNearestNull2(int index) {
+    */
+    private int findNearestNull2(int index) throws InterruptedException {
         // list is full, return -1.
         if (this.numV == N)
             return -1;
 
         int i = index;
         int j = index;
-        while (this.arr.get(i) != -1 && this.arr.get(j) != -1) {
-            if (i > 0)
+        
+        boolean nullflag = true;
+
+        // i--;
+        // j++;
+        while (nullflag) {
+            if (i != index) this.semArr.get(i).startReading();
+            if (j != index) this.semArr.get(j).startReading();
+
+            nullflag = this.arr.get(i) != -1 && this.arr.get(j) != -1;
+            if (!nullflag) {
+                // if (i != index) this.semArr.get(i).finishReading();
+                // if (j != index) this.semArr.get(j).finishReading();
+                break;
+            }
+            if (i > 0) {
+                if (i != index) this.semArr.get(i).finishReading();
                 i--;
-            if (j < this.lastEleIndex)
+                //this.semArr.get(i).startReading();
+                
+            }
+            if (j < this.lastEleIndex) {
+                if (j != index) this.semArr.get(j).finishReading();
                 j++;
+                //this.semArr.get(j).startReading();
+            }
 
             // when lastIndex is not -1 when we're searching to the right, the nearest index
             // must be lastindex + 1
+            //i didn't find any -1, j also didn't find any -1
             System.out.println("i:" + i + " j:" + j);
-            if (j == this.lastEleIndex && this.arr.get(j) != -1) {
-                if (this.arr.get(i) != -1) {
-                    return j + 1;
+           
+            // if (j == this.lastEleIndex && this.arr.get(j) != -1) {
+            //     if (i != index) this.semArr.get(i).startReading();
+            //     if (this.arr.get(i) != -1) {
+            //         if (i != index) this.semArr.get(i).finishReading();
+            //         if (j != index) this.semArr.get(j).finishReading();
+            //         return j + 1;
+            //     }
+            // }
+
+            if (j == this.lastEleIndex) {
+                if (j != index) this.semArr.get(j).startReading();
+                if (this.arr.get(j) != -1) {
+                    if (i != index) this.semArr.get(i).startReading();
+                    if (this.arr.get(i) != -1) {
+                        if (i != index) this.semArr.get(i).finishReading();
+                        if (j != index) this.semArr.get(j).finishReading();
+                        return j + 1;
+                    }
+                    if (i != index) this.semArr.get(i).finishReading();
+                    
                 }
+                if (j != index) this.semArr.get(j).finishReading();  
             }
         }
 
@@ -221,16 +275,24 @@ public class Ass1 {
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
             if (index - i <= j - index) {
+                if (i != index) this.semArr.get(i).finishReading();
+                if (j != index) this.semArr.get(j).finishReading();
                 return i;
             } else {
+                if (i != index) this.semArr.get(i).finishReading();
+                if (j != index) this.semArr.get(j).finishReading();
                 return j;
             }
 
         } else if (this.arr.get(i) == -1 && this.arr.get(j) != -1) {
             // front has null
+            if (i != index) this.semArr.get(i).finishReading();
+            if (j != index) this.semArr.get(j).finishReading();
             return i;
         } else {
             // back has null
+            if (i != index) this.semArr.get(i).finishReading();
+            if (j != index) this.semArr.get(j).finishReading();
             return j;
         }
 
@@ -382,6 +444,11 @@ public class Ass1 {
                 System.out.println("right :" + Integer.toString(right));
                 System.out.println(mid + " goes out, wait for finish");
                 this.semArr.get(mid).finishReading();
+                print_Sem_arr();
+                if (left > lastEleIndex) {
+                    //add for concurrency
+                    left = lastEleIndex;
+                }
                 this.semArr.get(left).startReading();
                 return left;
             }

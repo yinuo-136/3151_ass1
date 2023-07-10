@@ -113,7 +113,7 @@ public class Tests {
         test.insert(4);
         test.numV = 4;
         test.lastEleIndex = 3;
-        test.binarySearch(5);
+        //test.binarySearch(5);
         test.insert(5);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -130,7 +130,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        test.binarySearch(0);
+        //test.binarySearch(0);
         test.insert(12);
         test.insert(13);
         test.insert(14);
@@ -152,7 +152,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        test.binarySearch(1);
+        //test.binarySearch(1);
         test.insert(1);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -169,7 +169,8 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        test.binarySearch(8);
+        //test.binarySearch(8);
+        
         test.delete(8);
         test.insert(9);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
@@ -187,7 +188,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        test.binarySearch(8);
+        //test.binarySearch(8);
         test.delete(8);
         test.delete(10);
         test.insert(9);
@@ -214,7 +215,7 @@ public class Tests {
         // test.insert(11);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        test.binarySearch(8);
+        //test.binarySearch(8);
         test.delete(8);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
@@ -244,7 +245,7 @@ public class Tests {
         test.insert(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        test.binarySearch(8);
+        //test.binarySearch(8);
         test.delete(8);
         test.delete(10);
         test.delete(11);
@@ -266,7 +267,7 @@ public class Tests {
         test.insert(10);
         test.insert(11);
         test.insert(12);
-        test.binarySearch(8);
+        //test.binarySearch(8);
         test.delete(2);
         test.delete(3);
         test.insert(5);
@@ -299,7 +300,7 @@ public class Tests {
         test.delete(9);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        test.binarySearch(12);
+        //test.binarySearch(12);
         test.insert(12);
         test.insert(3);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
@@ -324,7 +325,7 @@ public class Tests {
         test.insert(11);
         // test.arr.add(12);
         test.delete(10);
-        test.binarySearch(12);
+        //test.binarySearch(12);
         test.insert(12);
 
         test.insert(9);
@@ -344,7 +345,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        test.binarySearch(1);
+        //test.binarySearch(1);
         test.delete(4);
         test.delete(5);
         test.delete(6);
@@ -368,7 +369,7 @@ public class Tests {
         Ass1 test = new Ass1(1);
         test.numV = 0;
         test.lastEleIndex = 0;
-        test.binarySearch(1);
+        //test.binarySearch(1);
         test.delete(8);
         test.insert(8);
         // test.delete(8);
@@ -510,7 +511,6 @@ public class Tests {
 
     public static void main(String[] args) throws InterruptedException {
         // test1();
-        // test1();
         // test2();
         // test3();
         // test4();
@@ -520,12 +520,12 @@ public class Tests {
         // test8();
         // test9();
         // test10();
-        // test11();
-        // test12();
-        // test13();
-        // test14();
-        // test15();
-        //test16();
+        test11();
+        test12();
+        test13();
+        test14();
+        test15();
+        test16();
         test17();
     }
 }
