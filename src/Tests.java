@@ -441,9 +441,12 @@ public class Tests {
         MemberReader m1 = new MemberReader(test);
         DeleteWriter m2 = new DeleteWriter(test);
 
-        m1.start();
+        
         m2.start();
+        m1.start();
 
+        m1.join();
+        m2.join();
         
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();

@@ -275,7 +275,7 @@ public class Ass1 {
         int resultIndex = this.binarySearch(x);
         //this.semArr.get(resultIndex).startWriting(); --deadlock
         this.semArr.get(resultIndex).finishReading();
-        
+        //System.out.println("========================finish read=========================");
         //other thread may affect the content on resultIndex --PROBLEM
 
         if (numV == 0) return;
@@ -326,17 +326,17 @@ public class Ass1 {
         while (left <= right) {
             
             int mid = left + ((right - left) >> 1);
-            int oldMid = mid;
+            
             this.semArr.get(mid).startReading();
             while ( this.arr.get(mid) == -1) {
-                
+                int oldMid = mid;
                 mid++;
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
                 } 
                 if (mid < 0) {
-                    System.out.println("origin");
+                    System.out.println("origin: mid = " + mid);
                     return 0; // in case mid goes out of left bound
                 }
 
@@ -355,35 +355,39 @@ public class Ass1 {
             if (left > right) {
                 System.out.println("left :" + Integer.toString(left));
                 System.out.println("right :" + Integer.toString(right));
+                this.semArr.get(mid).finishReading();
+                this.semArr.get(left).startReading();
                 return left;
             }
-            this.semArr.get(oldMid).finishReading(); // -- PROBLEM HERE
+            
+            this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));
         // System.out.println("right :" + Integer.toString(right));
+        this.semArr.get(left).startReading();
         return left;
     }
 
     //start reading the arr from index start to the end
-    private synchronized void startReadingBlocks(int start, int end) throws InterruptedException {
+    private void startReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).startReading();
         }
     }
 
-    private synchronized void endReadingBlocks(int start, int end) throws InterruptedException {
+    private void endReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).finishReading();
         }
     }
 
-    private synchronized void startWritingBlocks(int start, int end) throws InterruptedException {
+    private void startWritingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).startWriting();
         }
     }
 
-    private synchronized void endWritingBlocks(int start, int end) throws InterruptedException {
+    private void endWritingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).finishWriting();
         }
