@@ -13,15 +13,16 @@ public class Tests {
 
         @Override
         public void run() {
-
+            
             for (int i = 0; i < 10; i++) {
-                System.out.println(this + "member: " + i);
+                
                     try {
-                        ass1.member(i);
+                        System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
             }
+            
 
         }
     }

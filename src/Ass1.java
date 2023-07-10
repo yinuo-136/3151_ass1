@@ -5,7 +5,7 @@ import java.util.ArrayList;
 /**
  * ass1
  */
-public class Ass1 extends Thread {
+public class Ass1 {
 
     // size of bounded arr
     int N;
@@ -272,8 +272,14 @@ public class Ass1 extends Thread {
 
     public void delete(int x) throws InterruptedException {
         //if there's no element in the list, skip(currently)
-        if (numV == 0) return;
         int resultIndex = this.binarySearch(x);
+        
+        //this.semArr.get(resultIndex).startWriting(); --deadlock
+        this.semArr.get(resultIndex).finishReading();
+        
+        this.semArr.get(resultIndex).startWriting();     
+        if (numV == 0) return;
+        
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
@@ -309,7 +315,9 @@ public class Ass1 extends Thread {
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
+            
             int mid = left + ((right - left) >> 1);
+            int oldMid = mid;
             this.semArr.get(mid).startReading();
             while ( this.arr.get(mid) == -1) {
                 
@@ -323,7 +331,7 @@ public class Ass1 extends Thread {
                     return 0; // in case mid goes out of left bound
                 }
 
-                this.semArr.get(mid).finishReading();
+                this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
                 this.semArr.get(mid).startReading();
             }
 
@@ -340,7 +348,7 @@ public class Ass1 extends Thread {
                 System.out.println("right :" + Integer.toString(right));
                 return left;
             }
-            this.semArr.get(mid).finishReading();
+            this.semArr.get(oldMid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));
         // System.out.println("right :" + Integer.toString(right));
@@ -351,6 +359,12 @@ public class Ass1 extends Thread {
     private synchronized void startReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).startReading();
+        }
+    }
+
+    private synchronized void endReadingBlocks(int start, int end) throws InterruptedException {
+        for (int i = start; i <= end; i++) {
+            this.semArr.get(i).finishReading();
         }
     }
 
@@ -374,7 +388,8 @@ public class Ass1 extends Thread {
 
     }
 
-    public void print_sorted() {
+    public void print_sorted() throws InterruptedException {
+        startReadingBlocks(0, this.lastEleIndex);
         String result = "";
         result = result + "[";
         for (int ele : this.arr) {
@@ -385,6 +400,7 @@ public class Ass1 extends Thread {
         }
         result = result + "]";
         System.out.println(result);
+        endReadingBlocks(0, this.lastEleIndex);
     }
 
 }

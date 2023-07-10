@@ -19,8 +19,10 @@ public class Ass1Lock {
         
         // Release the reader semaphore
         readSem.release();
+
+        //readSem.hasQueuedThreads()
     }
-    
+
     public void finishReading() throws InterruptedException {
         // Acquire a permit from the reader semaphore
         endRead.acquire();
@@ -54,5 +56,16 @@ public class Ass1Lock {
         // Release the writer semaphore
         writeSem.release();
         readSem.release();
+    }
+
+
+    public static void main(String[] args) throws InterruptedException {
+        Ass1Lock SemLock = new Ass1Lock();
+
+        SemLock.startReading();
+        SemLock.startWriting();
+        SemLock.finishReading();
+        
+        System.out.println("finish");
     }
 }
