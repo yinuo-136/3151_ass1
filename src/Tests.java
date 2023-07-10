@@ -1,5 +1,6 @@
 package src;
 
+import java.util.Random;
 
 public class Tests {
 
@@ -14,10 +15,11 @@ public class Tests {
         @Override
         public void run() {
             
-            for (int i = 0; i < 1; i++) {
-                
+            for (int i = 0; i < 10; i++) {
+                    Random rn = new Random();
+                    int answer = rn.nextInt(10);
                     try {
-                        System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
+                        System.out.println(this + "member: " + answer + "is in the list? ->" + ass1.member(answer));
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -39,11 +41,11 @@ public class Tests {
         public void run() {
             
             for (int i = 0; i < 10; i++) {
-                
+                    Random rn = new Random();
+                    int answer = rn.nextInt(10);
                     try {
-                        
-                            System.out.println(this + "delete: " + i);
-                            ass1.delete(i);
+                            System.out.println(this + "delete: " + answer);
+                            ass1.delete(answer);
                         
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -438,6 +440,7 @@ public class Tests {
         test.insert(8);
         test.insert(9);
 
+        test.print_Sem_arr();
         MemberReader m1 = new MemberReader(test);
         DeleteWriter m2 = new DeleteWriter(test);
 

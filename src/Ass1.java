@@ -50,9 +50,13 @@ public class Ass1 {
         if (this.numV == N)
             return;
         int insertIndex = this.binarySearch(x);
+        // System.out.println("========================before FINISH reading=========================" + "\nIDX:" + insertIndex );
+        // print_Sem_arr();
         this.semArr.get(insertIndex).finishReading();
+        // System.out.println("========================after FINISH reading=========================" + "\nIDX:" + insertIndex );
+        // print_Sem_arr();
 
-        
+
         if (insertIndex == lastEleIndex + 1) {
 
         } else {
@@ -328,8 +332,10 @@ public class Ass1 {
     // test.arr.add(10);5
     public int binarySearch(int tar) throws InterruptedException {
 
-        if (numV == 0)
+        if (numV == 0) {
+            this.semArr.get(0).startReading();
             return 0;
+        }
         
         int left = 0;
         int right = this.lastEleIndex;
