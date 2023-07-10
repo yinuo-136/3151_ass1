@@ -3,11 +3,11 @@ package src;
 
 public class Tests {
 
-    public static class memberReader extends Thread {
+    public static class MemberReader extends Thread {
 
         Ass1 ass1;
         
-        public memberReader (Ass1 a) {
+        public MemberReader (Ass1 a) {
             this.ass1 = a;
         }
 
@@ -18,6 +18,33 @@ public class Tests {
                 
                     try {
                         System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+            
+
+        }
+    }
+
+    public static class DeleteWriter extends Thread {
+
+        Ass1 ass1;
+        
+        public DeleteWriter(Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            for (int i = 0; i < 10; i++) {
+                
+                    try {
+                        
+                            System.out.println(this + "delete: " + i);
+                            ass1.delete(i);
+                        
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -384,12 +411,40 @@ public class Tests {
         test.insert(8);
         test.insert(9);
 
-        memberReader m1 = new memberReader(test);
-        memberReader m2 = new memberReader(test);
+        MemberReader m1 = new MemberReader(test);
+        MemberReader m2 = new MemberReader(test);
 
         m1.start();
         m2.start();
 
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test17() throws InterruptedException {
+        System.out.println("==============test17 CONCURRENCY MEMBER AND DELETE=================");
+        //COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        MemberReader m1 = new MemberReader(test);
+        DeleteWriter m2 = new DeleteWriter(test);
+
+        m1.start();
+        m2.start();
+
+        
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
@@ -413,7 +468,8 @@ public class Tests {
         // test13();
         // test14();
         // test15();
-        test16();
+        //test16();
+        test17();
     }
 }
 

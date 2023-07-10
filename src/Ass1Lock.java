@@ -62,6 +62,7 @@ public class Ass1Lock {
     public static void main(String[] args) throws InterruptedException {
         Ass1Lock SemLock = new Ass1Lock();
 
+        //DEADLOCK COMBINATION
         SemLock.startReading();
         SemLock.startWriting();
         SemLock.finishReading();

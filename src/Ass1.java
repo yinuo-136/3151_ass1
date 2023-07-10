@@ -273,17 +273,20 @@ public class Ass1 {
     public void delete(int x) throws InterruptedException {
         //if there's no element in the list, skip(currently)
         int resultIndex = this.binarySearch(x);
-        
         //this.semArr.get(resultIndex).startWriting(); --deadlock
         this.semArr.get(resultIndex).finishReading();
         
-        this.semArr.get(resultIndex).startWriting();     
+        //other thread may affect the content on resultIndex --PROBLEM
+
         if (numV == 0) return;
-        
+
+        this.semArr.get(resultIndex).startWriting();
+        System.out.println("========================start write=========================");
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
             if (resultIndex == lastEleIndex) {
+                startWritingBlocks(0, resultIndex - 1);  
                 int temp = lastEleIndex;
                 while (this.arr.get(temp) == -1) {
                     if (temp == 0) {
@@ -295,11 +298,17 @@ public class Ass1 {
                     temp--;
 
                 }
+                //this.lastEleIndex = temp;
+                endWritingBlocks(0, resultIndex - 1);
                 this.lastEleIndex = temp;
             }
 
         }
+        this.semArr.get(resultIndex).finishWriting();
     }
+
+
+    
 
     // test.arr.add(-1);0
     // test.arr.add(4);1
@@ -365,6 +374,18 @@ public class Ass1 {
     private synchronized void endReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).finishReading();
+        }
+    }
+
+    private synchronized void startWritingBlocks(int start, int end) throws InterruptedException {
+        for (int i = start; i <= end; i++) {
+            this.semArr.get(i).startWriting();
+        }
+    }
+
+    private synchronized void endWritingBlocks(int start, int end) throws InterruptedException {
+        for (int i = start; i <= end; i++) {
+            this.semArr.get(i).finishWriting();
         }
     }
 
