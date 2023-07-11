@@ -1,10 +1,62 @@
 package src;
 
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Tests {
 
-    public static class InsertWriterInOrder extends Thread {
+    public static class Compress extends Thread {
+
+        Ass1 ass1;
+        
+        public Compress (Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            while (true) {
+                if (ass1.lastEleIndex - ass1.numV > ass1.shiftRatio) {
+                    try {
+                        ass1.compress2();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            
+
+        }
+    }
+
+    public static class InsertWriterRandom extends Thread {
+
+        Ass1 ass1;
+        
+        public InsertWriterRandom (Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            for (int i = 0; i < 10; i++) {
+                    try {
+                        Random rn = new Random();
+                        int answer = rn.nextInt(10);
+                        ass1.insert(answer);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+            
+
+        }
+    }
+
+     public static class InsertWriterInOrder extends Thread {
 
         Ass1 ass1;
         
@@ -118,7 +170,7 @@ public class Tests {
                     try {
                             System.out.println(this + "delete: " + answer);
                             ass1.delete(answer);
-                        
+                            //ass1.compress2();
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -197,10 +249,13 @@ public class Tests {
         
         test.delete(8);
         test.insert(9);
+
+
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
+        test.print_Sem_arr();
     }
 
     public static void test5() throws InterruptedException {
@@ -516,7 +571,7 @@ public class Tests {
         test.insert(7);
         test.insert(8);
         test.insert(9);
-
+        System.out.println("=======jjjjjjjjjjjjjjjjjjjjj=======");
         test.print_Sem_arr();
         // MemberReader m1 = new MemberReader(test);
         // DeleteWriter m2 = new DeleteWriter(test);
@@ -575,13 +630,100 @@ public class Tests {
         System.out.println(test.arr);
     }
 
+    public static void test19() throws InterruptedException {
+        System.out.println("==============test19 CONCURRENCY ALL RANDOM=================");
+        //COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        test.print_Sem_arr();
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        DeleteRandomWriter m2 = new DeleteRandomWriter(test);
+        InsertWriterRandom m3 = new InsertWriterRandom(test);
+        //Compress m4 = new Compress(test);
+
+        //m4.start();
+        m2.start();
+        m1.start();
+        m3.start();
+        
+
+        m1.join();
+        m2.join();
+        m3.join();
+        //m4.join();
+        
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test20() throws InterruptedException {
+        System.out.println("==============test20 COMPRESS=================");
+        //COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        Compress m4 = new Compress(test);
+        m4.start();
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        test.delete(2);
+        test.delete(3);
+        test.delete(4);
+        test.delete(5);
+        test.delete(6);
+        test.delete(7);
+
+        test.print_Sem_arr();
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+        // MemberRandomReader m1 = new MemberRandomReader(test);
+        // DeleteRandomWriter m2 = new DeleteRandomWriter(test);
+        // InsertWriterRandom m3 = new InsertWriterRandom(test);
+    
+        // m2.start();
+        // m1.start();
+        // m3.start();
+        
+
+        // m1.join();
+        // m2.join();
+        // m3.join();
+        //m4.join();
+        
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
 
     public static void main(String[] args) throws InterruptedException {
         // test1();
         // test2();
         // test3();
-        // test4();
-        // test5();
+        //test4();
+        //test5();
         // test6();
         // test7();
         // test8();
@@ -593,8 +735,18 @@ public class Tests {
         // test14();
         // test15();
         //test16();
-        // test17();
-        test18();
+        test17();
+        // test18();
+        //test19();
+        //test20();
+        // HashMap<Integer, ArrayList<Integer>> h = new HashMap<>();
+
+        // h.put(1, new ArrayList<Integer>());
+        // //key
+        // int key = (int) h.keySet().toArray()[0];
+        // System.out.println(key + " " + (h.get(key)).getClass());
+
+        
     }
 }
 

@@ -11,7 +11,7 @@ public class Ass1Lock {
     public boolean writeLock = false;
     
     public void startReading() throws InterruptedException {
-        // Acquire a permit from the reader semaphore
+        // Acquire a permit from the reader semaphor
         readSem.acquire();
         
         // Increase the active readers count
@@ -59,6 +59,35 @@ public class Ass1Lock {
         readSem.release();
     }
 
+    public void fRsW() throws InterruptedException {
+        //=================FINISH READING
+        // Acquire a permit from the reader semaphore
+        endRead.acquire();
+        
+        // Decrease the active readers count
+        readerCount--;
+        
+        if (readerCount == 0 && writeLock == true) {
+            System.out.println("=============release first write===============");
+            beginWrite.release();
+        }
+        // Release the reader semaphore
+        endRead.release();
+        
+        //===============START WRITING 
+        // Acquire a permit from the writer semaphore
+        writeSem.acquire();
+
+        // Acquire a reader semaphore
+        readSem.acquire();
+        
+        // Wait until all active readers finish 
+        if (readerCount > 0) {
+            writeLock = true;
+            beginWrite.acquire();
+        }
+    }
+
 
     public static void main(String[] args) throws InterruptedException {
         Ass1Lock SemLock = new Ass1Lock();
@@ -70,9 +99,9 @@ public class Ass1Lock {
 
 
         //DEADLOCK COMBINATION
-        SemLock.startReading();
-        SemLock.finishReading();
-        SemLock.startWriting();
+        // SemLock.startReading();
+        // SemLock.finishReading();
+        // SemLock.startWriting();
         
 
         
