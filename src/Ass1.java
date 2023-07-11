@@ -91,10 +91,12 @@ public class Ass1 {
         }
 
         // insert the element between the current list
+        // already lock from the nullIndex to insert Index
         int nullIndex = this.findNearestNull2(insertIndex);
         System.out.println("insertidx:" + insertIndex);
         System.out.println("nullidx:" + nullIndex);
-        //7/11 ------ 直接锁insert 到 nullIndex, 锁startWriting, shift完release writing 锁
+
+        //shift完release writing 锁
         if (insertIndex < nullIndex) {
             // RIGHT SHIFT
             if (x < this.arr.get(insertIndex)) {
@@ -115,6 +117,7 @@ public class Ass1 {
 
 
                 }
+                //insert
                 this.arr.set(insertIndex, x);
             } else {
                 int previous_ele = 0;
@@ -129,8 +132,11 @@ public class Ass1 {
                         previous_ele = temp;
                     }
                 }
+                //insert
                 this.arr.set(insertIndex + 1, x);
             }
+            //release lock
+            endWritingBlocks(insertIndex, nullIndex);
         } else {
             // LEFT SHIFT
             if (x < this.arr.get(insertIndex)) {
@@ -150,6 +156,7 @@ public class Ass1 {
                 }
                 this.arr.set(insertIndex, x);
             }
+            endWritingBlocks(nullIndex, insertIndex);
         }
         this.numV++;
         return;
@@ -220,8 +227,8 @@ public class Ass1 {
         // i--;
         // j++;
         while (nullflag) {
-            if (i != index) this.semArr.get(i).startReading();
-            if (j != index) this.semArr.get(j).startReading();
+            if (i != index) this.semArr.get(i).startWriting();
+            if (j != index) this.semArr.get(j).startWriting();
 
             nullflag = this.arr.get(i) != -1 && this.arr.get(j) != -1;
             if (!nullflag) {
@@ -230,13 +237,13 @@ public class Ass1 {
                 break;
             }
             if (i > 0) {
-                if (i != index) this.semArr.get(i).finishReading();
+                // if (i != index) this.semArr.get(i).finishReading();
                 i--;
                 //this.semArr.get(i).startReading();
                 
             }
             if (j < this.lastEleIndex) {
-                if (j != index) this.semArr.get(j).finishReading();
+                // if (j != index) this.semArr.get(j).finishReading();
                 j++;
                 //this.semArr.get(j).startReading();
             }
@@ -244,7 +251,7 @@ public class Ass1 {
             // when lastIndex is not -1 when we're searching to the right, the nearest index
             // must be lastindex + 1
             //i didn't find any -1, j also didn't find any -1
-            System.out.println("i:" + i + " j:" + j);
+            System.out.println("i:" + i + "is null? "+ (this.arr.get(i) == -1) + "\n" + " j:" + j + "is null? "+ (this.arr.get(j) == -1));
            
             // if (j == this.lastEleIndex && this.arr.get(j) != -1) {
             //     if (i != index) this.semArr.get(i).startReading();
@@ -256,43 +263,48 @@ public class Ass1 {
             // }
 
             if (j == this.lastEleIndex) {
-                if (j != index) this.semArr.get(j).startReading();
+                if (j != index) this.semArr.get(j).startWriting();
                 if (this.arr.get(j) != -1) {
-                    if (i != index) this.semArr.get(i).startReading();
+                    if (i != index) this.semArr.get(i).startWriting();
                     if (this.arr.get(i) != -1) {
-                        if (i != index) this.semArr.get(i).finishReading();
-                        if (j != index) this.semArr.get(j).finishReading();
+                        //left unlock
+                        if (index > 0) {
+                            endWritingBlocks(i, index - 1);
+                        }
+
+                        
+                        //right keep lock [index,j+1]
+                        this.semArr.get(j+1).startWriting();
                         return j + 1;
                     }
-                    if (i != index) this.semArr.get(i).finishReading();
+                    //right unlock
+                    //left keep
+
+                    if (i != index) this.semArr.get(i).finishWriting();
                     
                 }
-                if (j != index) this.semArr.get(j).finishReading();  
+                if (j != index) this.semArr.get(j).finishWriting();
             }
         }
-
+        System.out.println("out----------------------");
         // int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
             if (index - i <= j - index) {
-                if (i != index) this.semArr.get(i).finishReading();
-                if (j != index) this.semArr.get(j).finishReading();
+                if (index != lastEleIndex) endWritingBlocks(index + 1, j);
                 return i;
             } else {
-                if (i != index) this.semArr.get(i).finishReading();
-                if (j != index) this.semArr.get(j).finishReading();
+                if (index > 0) endWritingBlocks(i, index - 1);
                 return j;
             }
 
         } else if (this.arr.get(i) == -1 && this.arr.get(j) != -1) {
             // front has null
-            if (i != index) this.semArr.get(i).finishReading();
-            if (j != index) this.semArr.get(j).finishReading();
+            if (index != lastEleIndex) endWritingBlocks(index + 1, j);
             return i;
         } else {
             // back has null
-            if (i != index) this.semArr.get(i).finishReading();
-            if (j != index) this.semArr.get(j).finishReading();
+            if (index > 0) endWritingBlocks(i, index - 1);
             return j;
         }
 

@@ -4,6 +4,30 @@ import java.util.Random;
 
 public class Tests {
 
+    public static class InsertWriterInOrder extends Thread {
+
+        Ass1 ass1;
+        
+        public InsertWriterInOrder (Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+            
+            for (int i = 0; i < 10; i++) {
+                    try {
+                        System.out.println("insert " + i );
+                        ass1.insert(i);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+            }
+            
+
+        }
+    }
+
     public static class MemberRandomReader extends Thread {
 
         Ass1 ass1;
@@ -271,7 +295,11 @@ public class Tests {
         test.delete(2);
         test.delete(3);
         test.insert(5);
-        System.out.println("======");
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+        // System.out.println("======");
         test.insert(6);
         System.out.println("======");
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
@@ -509,6 +537,45 @@ public class Tests {
         System.out.println(test.arr);
     }
 
+    public static void test18() throws InterruptedException {
+        System.out.println("==============test18 CONCURRENCY MEMBER AND DELETE AND INSERT=================");
+        //COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        test.print_Sem_arr();
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        DeleteRandomWriter m2 = new DeleteRandomWriter(test);
+        InsertWriterInOrder m3 = new InsertWriterInOrder(test);
+
+        
+        m2.start();
+        m1.start();
+        m3.start();
+
+        m1.join();
+        m2.join();
+        m3.join();
+        
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+
     public static void main(String[] args) throws InterruptedException {
         // test1();
         // test2();
@@ -520,13 +587,14 @@ public class Tests {
         // test8();
         // test9();
         // test10();
-        test11();
-        test12();
-        test13();
-        test14();
-        test15();
-        test16();
-        test17();
+        // test11();
+        // test12();
+        // test13();
+        // test14();
+        // test15();
+        //test16();
+        // test17();
+        test18();
     }
 }
 
