@@ -1,4 +1,5 @@
 package src;
+
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,10 +19,10 @@ public class Ass1 {
     int lastEleIndex;
     //
     // public static ArrayList<Integer> arr = new ArrayList<Integer>();
-    // public static ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+    // public static ArrayList<Ass1Lock> semArr = new ArrayList<Ass1Lock>();
 
     public ArrayList<Integer> arr = new ArrayList<Integer>();
-    public ArrayList<Ass1Lock> semArr =  new ArrayList<Ass1Lock>();
+    public ArrayList<Ass1Lock> semArr = new ArrayList<Ass1Lock>();
 
     // index|value ??
     // ArrayList<String> cp_Arr;
@@ -35,11 +36,12 @@ public class Ass1 {
     // constructor
     public Ass1(int N) {
         this.N = N;
-        //if N > 0, insert a -1 to the list
-        if (this.N > 0) arr.add(-1);
+        // if N > 0, insert a -1 to the list
+        if (this.N > 0)
+            arr.add(-1);
         this.numV = 0;
         this.lastEleIndex = 0;
-        //init lock list
+        // init lock list
         for (int i = 0; i < N; i++) {
             Ass1Lock newLock = new Ass1Lock();
             semArr.add(newLock);
@@ -56,13 +58,13 @@ public class Ass1 {
         // list is full no empty element
         if (this.numV == N)
             return;
-        //int insertIndex = this.binarySearch(x);
 
-        HashMap<Integer,  ArrayList<Integer>> result = this.binarySearch(x);
+        HashMap<Integer, ArrayList<Integer>> result = this.binarySearch(x);
         System.out.println(result);
         int insertIndex = (int) result.keySet().toArray()[0];
-        //this.semArr.get(resultIndex).startWriting(); --deadlock
-        // System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
+        // this.semArr.get(resultIndex).startWriting(); --deadlock
+        // System.out.println("========================before finish read IN
+        // DELETE=========================" + " IDX:" + resultIndex);
         // print_Sem_arr();
         print_Sem_arr();
         for (int i : result.get(insertIndex)) {
@@ -70,11 +72,13 @@ public class Ass1 {
             this.semArr.get(i).finishReading();
         }
         print_Sem_arr();
-        //System.out.println("finish for =================");
-        // System.out.println("========================before FINISH reading=========================" + "\nIDX:" + insertIndex );
+        // System.out.println("finish for =================");
+        // System.out.println("========================before FINISH
+        // reading=========================" + "\nIDX:" + insertIndex );
         // print_Sem_arr();
-        //this.semArr.get(insertIndex).finishReading();
-        // System.out.println("========================after FINISH reading=========================" + "\nIDX:" + insertIndex );
+        // this.semArr.get(insertIndex).finishReading();
+        // System.out.println("========================after FINISH
+        // reading=========================" + "\nIDX:" + insertIndex );
         // print_Sem_arr();
 
         this.semArr.get(insertIndex).startWriting();
@@ -87,7 +91,6 @@ public class Ass1 {
                 return;
             }
         }
-
 
         // x is the biggest element, append to the last position
         if (insertIndex > lastEleIndex) {
@@ -113,7 +116,7 @@ public class Ass1 {
         System.out.println("insertidx:" + insertIndex);
         System.out.println("nullidx:" + nullIndex);
 
-        //shift完release writing 锁
+        // shift完release writing 锁
         if (insertIndex < nullIndex) {
             // RIGHT SHIFT
             if (x < this.arr.get(insertIndex)) {
@@ -132,9 +135,8 @@ public class Ass1 {
                         previous_ele = temp;
                     }
 
-
                 }
-                //insert
+                // insert
                 this.arr.set(insertIndex, x);
             } else {
                 int previous_ele = 0;
@@ -149,10 +151,10 @@ public class Ass1 {
                         previous_ele = temp;
                     }
                 }
-                //insert
+                // insert
                 this.arr.set(insertIndex + 1, x);
             }
-            //release lock
+            // release lock
             endWritingBlocks(insertIndex, nullIndex);
         } else {
             // LEFT SHIFT
@@ -181,39 +183,39 @@ public class Ass1 {
     }
 
     /*
-    public void compress() {
-        // arr is null, do nothing
-        if (this.numV == 0) {
-            return;
-        }
-        if (this.numV == 1 && this.arr.get(0) != -1) {
-            return;
-        }
-        int oldLastEleIndex = this.lastEleIndex;
-        int i = 1;
-        while (i <= oldLastEleIndex) {
-            
-            int curItem = this.arr.get(i);
-            if (curItem != -1) {
-                int j = i - 1;
-                if (this.arr.get(j) == -1) {
-                    this.lastEleIndex--;
-                }
-                while (j >= 0 && this.arr.get(j) == -1) {
-                    this.arr.set(j, curItem);
-                    this.arr.set(j+1,-1);
-                    j--;
-                }               
-            }
-            i++;
-        }
-        System.out.println("a: " + this.lastEleIndex);
-        System.out.println(oldLastEleIndex);
-        for (int k = oldLastEleIndex; k > lastEleIndex; k --) {
-            this.arr.remove(k);
-        }
-    }
-    */
+     * public void compress() {
+     * // arr is null, do nothing
+     * if (this.numV == 0) {
+     * return;
+     * }
+     * if (this.numV == 1 && this.arr.get(0) != -1) {
+     * return;
+     * }
+     * int oldLastEleIndex = this.lastEleIndex;
+     * int i = 1;
+     * while (i <= oldLastEleIndex) {
+     * 
+     * int curItem = this.arr.get(i);
+     * if (curItem != -1) {
+     * int j = i - 1;
+     * if (this.arr.get(j) == -1) {
+     * this.lastEleIndex--;
+     * }
+     * while (j >= 0 && this.arr.get(j) == -1) {
+     * this.arr.set(j, curItem);
+     * this.arr.set(j+1,-1);
+     * j--;
+     * }
+     * }
+     * i++;
+     * }
+     * System.out.println("a: " + this.lastEleIndex);
+     * System.out.println(oldLastEleIndex);
+     * for (int k = oldLastEleIndex; k > lastEleIndex; k --) {
+     * this.arr.remove(k);
+     * }
+     * }
+     */
 
     public void compress2() throws InterruptedException {
         // arr is null, do nothing
@@ -232,12 +234,13 @@ public class Ass1 {
         int oldLastEleIndex = lastEleIndex;
         this.lastEleIndex = this.arr.size() - 1;
         endWritingBlocks(0, oldLastEleIndex);
-        
-    }
-    /*
-        锁上别解锁，找到nearest null 了以后 把不需要锁的解锁
 
-    */
+    }
+
+    /*
+     * 锁上别解锁，找到nearest null 了以后 把不需要锁的解锁
+     * 
+     */
     private int findNearestNull2(int index) throws InterruptedException {
         // list is full, return -1.
         if (this.numV == N)
@@ -245,14 +248,16 @@ public class Ass1 {
 
         int i = index;
         int j = index;
-        
+
         boolean nullflag = true;
 
         // i--;
         // j++;
         while (nullflag) {
-            if (i != index) this.semArr.get(i).startWriting();
-            if (j != index) this.semArr.get(j).startWriting();
+            if (i != index)
+                this.semArr.get(i).startWriting();
+            if (j != index)
+                this.semArr.get(j).startWriting();
 
             nullflag = this.arr.get(i) != -1 && this.arr.get(j) != -1;
             if (!nullflag) {
@@ -263,51 +268,55 @@ public class Ass1 {
             if (i > 0) {
                 // if (i != index) this.semArr.get(i).finishReading();
                 i--;
-                //this.semArr.get(i).startReading();
-                
+                // this.semArr.get(i).startReading();
+
             }
             if (j < this.lastEleIndex) {
                 // if (j != index) this.semArr.get(j).finishReading();
                 j++;
-                //this.semArr.get(j).startReading();
+                // this.semArr.get(j).startReading();
             }
 
             // when lastIndex is not -1 when we're searching to the right, the nearest index
             // must be lastindex + 1
-            //i didn't find any -1, j also didn't find any -1
-            System.out.println("i:" + i + "is null? "+ (this.arr.get(i) == -1) + "\n" + " j:" + j + "is null? "+ (this.arr.get(j) == -1));
-           
+            // i didn't find any -1, j also didn't find any -1
+            System.out.println("i:" + i + "is null? " + (this.arr.get(i) == -1) + "\n" + " j:" + j + "is null? "
+                    + (this.arr.get(j) == -1));
+
             // if (j == this.lastEleIndex && this.arr.get(j) != -1) {
-            //     if (i != index) this.semArr.get(i).startReading();
-            //     if (this.arr.get(i) != -1) {
-            //         if (i != index) this.semArr.get(i).finishReading();
-            //         if (j != index) this.semArr.get(j).finishReading();
-            //         return j + 1;
-            //     }
+            // if (i != index) this.semArr.get(i).startReading();
+            // if (this.arr.get(i) != -1) {
+            // if (i != index) this.semArr.get(i).finishReading();
+            // if (j != index) this.semArr.get(j).finishReading();
+            // return j + 1;
+            // }
             // }
 
             if (j == this.lastEleIndex) {
-                if (j != index) this.semArr.get(j).startWriting();
+                if (j != index)
+                    this.semArr.get(j).startWriting();
                 if (this.arr.get(j) != -1) {
-                    if (i != index) this.semArr.get(i).startWriting();
+                    if (i != index)
+                        this.semArr.get(i).startWriting();
                     if (this.arr.get(i) != -1) {
-                        //left unlock
+                        // left unlock
                         if (index > 0) {
                             endWritingBlocks(i, index - 1);
                         }
 
-                        
-                        //right keep lock [index,j+1]
-                        this.semArr.get(j+1).startWriting();
+                        // right keep lock [index,j+1]
+                        this.semArr.get(j + 1).startWriting();
                         return j + 1;
                     }
-                    //right unlock
-                    //left keep
+                    // right unlock
+                    // left keep
 
-                    if (i != index) this.semArr.get(i).finishWriting();
-                    
+                    if (i != index)
+                        this.semArr.get(i).finishWriting();
+
                 }
-                if (j != index) this.semArr.get(j).finishWriting();
+                if (j != index)
+                    this.semArr.get(j).finishWriting();
             }
         }
         System.out.println("out----------------------");
@@ -315,20 +324,24 @@ public class Ass1 {
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
             if (index - i <= j - index) {
-                if (index != lastEleIndex) endWritingBlocks(index + 1, j);
+                if (index != lastEleIndex)
+                    endWritingBlocks(index + 1, j);
                 return i;
             } else {
-                if (index > 0) endWritingBlocks(i, index - 1);
+                if (index > 0)
+                    endWritingBlocks(i, index - 1);
                 return j;
             }
 
         } else if (this.arr.get(i) == -1 && this.arr.get(j) != -1) {
             // front has null
-            if (index != lastEleIndex) endWritingBlocks(index + 1, j);
+            if (index != lastEleIndex)
+                endWritingBlocks(index + 1, j);
             return i;
         } else {
             // back has null
-            if (index > 0) endWritingBlocks(i, index - 1);
+            if (index > 0)
+                endWritingBlocks(i, index - 1);
             return j;
         }
 
@@ -377,38 +390,43 @@ public class Ass1 {
     }
 
     public void delete(int x) throws InterruptedException {
-        //if there's no element in the list, skip(currently)
-        // System.out.println("========================before read IN DELETE=========================" + " IDX:" );
+        // if there's no element in the list, skip(currently)
+        // System.out.println("========================before read IN
+        // DELETE=========================" + " IDX:" );
         // print_Sem_arr();
-        HashMap<Integer,  ArrayList<Integer>> result = this.binarySearch(x);
+        HashMap<Integer, ArrayList<Integer>> result = this.binarySearch(x);
         int resultIndex = (int) result.keySet().toArray()[0];
-        //this.semArr.get(resultIndex).startWriting(); --deadlock
-        // System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
+        // this.semArr.get(resultIndex).startWriting(); --deadlock
+        // System.out.println("========================before finish read IN
+        // DELETE=========================" + " IDX:" + resultIndex);
         // print_Sem_arr();
         for (int i : result.get(resultIndex)) {
             this.semArr.get(i).finishReading();
+            System.out.println("index " + i + " outside binary search " + "is finish reading");
         }
-        //this.semArr.get(resultIndex).finishReading();
-        //System.out.println("========================finish read=========================");
-        //other thread may affect the content on resultIndex --PROBLEM
+        // this.semArr.get(resultIndex).finishReading();
+        // System.out.println("========================finish
+        // read=========================");
+        // other thread may affect the content on resultIndex --PROBLEM
 
-        if (numV == 0) return;
-        System.out.println("========================before write=========================" + " IDX:"  + resultIndex);
+        if (numV == 0)
+            return;
+        System.out.println("========================before write=========================" + " IDX:" + resultIndex);
         print_Sem_arr();
         this.semArr.get(resultIndex).startWriting();
         System.out.println("========================start write=========================" + " IDX:" + resultIndex);
-        
+        print_Sem_arr();
         if (this.lastEleIndex < resultIndex) {
-            //only happen in concurrency
+            // only happen in concurrency
             this.semArr.get(resultIndex).finishWriting();
             return;
         }
-        
+
         if (this.arr.get(resultIndex) == x) {
             this.arr.set(resultIndex, -1);
             this.numV--;
             if (resultIndex == lastEleIndex) {
-                startWritingBlocks(0, resultIndex - 1);  
+                startWritingBlocks(0, resultIndex - 1);
                 int temp = lastEleIndex;
                 while (this.arr.get(temp) == -1) {
                     if (temp == 0) {
@@ -420,7 +438,7 @@ public class Ass1 {
                     temp--;
 
                 }
-                //this.lastEleIndex = temp;
+                // this.lastEleIndex = temp;
                 endWritingBlocks(0, resultIndex - 1);
                 this.lastEleIndex = temp;
             }
@@ -430,49 +448,46 @@ public class Ass1 {
         System.out.println("========================finish write=========================");
     }
 
-
-    
-
     // test.arr.add(-1);0
     // test.arr.add(4);1
     // test.arr.add(-1);2
     // test.arr.add(8);3
     // test.arr.add(-1);4
     // test.arr.add(10);5
-    public HashMap<Integer,  ArrayList<Integer>> binarySearch(int tar) throws InterruptedException {
+    public HashMap<Integer, ArrayList<Integer>> binarySearch(int tar) throws InterruptedException {
         ArrayList<Integer> haveSeen = new ArrayList<Integer>();
-        //ArrayList<Integer> haveSeen = new ArrayList<Integer>();
-        HashMap<Integer,  ArrayList<Integer>> result = new HashMap<>();
+        // ArrayList<Integer> haveSeen = new ArrayList<Integer>();
+        HashMap<Integer, ArrayList<Integer>> result = new HashMap<>();
         if (numV == 0) {
             this.semArr.get(0).startReading();
             haveSeen.add(0);
             result.put(0, haveSeen);
             return result;
         }
-        
+
         int left = 0;
         int right = this.lastEleIndex;
         while (left <= right) {
-            
+
             int mid = left + ((right - left) >> 1);
             System.out.println(mid + " Start read");
             this.semArr.get(mid).startReading();
             haveSeen.add(mid);
-            while ( this.arr.get(mid) == -1) {
-                //System.out.println("IMHERE---------------");
+            while (this.arr.get(mid) == -1) {
+                // System.out.println("IMHERE---------------");
                 int oldMid = mid; // 0
                 mid++; // 1
                 if (mid > right) {
                     right = left + ((right - left) >> 1) - 1;
                     mid = left + ((right - left) >> 1);
-                } 
+                }
                 if (mid < 0) {
                     System.out.println("origin: mid = " + mid);
                     result.put(0, haveSeen);
                     return result; // in case mid goes out of left bound
                 }
-                System.out.println(oldMid + "o finish read");
-                //this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
+                // System.out.println(oldMid + "o finish read");
+                // this.semArr.get(oldMid).finishReading(); // -- PROBLEM HERE
                 System.out.println(mid + "o start read");
                 this.semArr.get(mid).startReading();
                 haveSeen.add(mid);
@@ -486,24 +501,27 @@ public class Ass1 {
             } else {
                 left = mid + 1;
             }
-            // return before the loop finish so that we don't finish reading 
+            // return before the loop finish so that we don't finish reading
             if (left > right) {
                 System.out.println("left :" + Integer.toString(left));
                 System.out.println("right :" + Integer.toString(right));
                 System.out.println(mid + " goes out, wait for finish");
                 // this.semArr.get(mid).finishReading();
-                print_Sem_arr();
+                // print_Sem_arr();
                 if (left > lastEleIndex) {
-                    //add for concurrency
+                    // add for concurrency
                     left = lastEleIndex;
                 }
+                System.out.println("===========b4 wait for finish b4 startReading============");
                 this.semArr.get(left).startReading();
+                System.out.println("===========b4 wait for finish after startReading============");
                 haveSeen.add(left);
                 result.put(left, haveSeen);
+                System.out.println("===========b4 wait for finish return============");
                 return result;
             }
             System.out.println(mid + " finish");
-            //this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
+            // this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));
         // System.out.println("right :" + Integer.toString(right));
@@ -513,7 +531,7 @@ public class Ass1 {
         return result;
     }
 
-    //start reading the arr from index start to the end
+    // start reading the arr from index start to the end
     private void startReadingBlocks(int start, int end) throws InterruptedException {
         for (int i = start; i <= end; i++) {
             this.semArr.get(i).startReading();
@@ -539,43 +557,47 @@ public class Ass1 {
     }
 
     public boolean member(int x) throws InterruptedException {
-        // System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
+        // System.out.println("========================before read IN
+        // MEMBER=========================" + " IDX:" );
         // print_Sem_arr();
-        
 
-        HashMap<Integer,  ArrayList<Integer>> resultPair = this.binarySearch(x);
+        HashMap<Integer, ArrayList<Integer>> resultPair = this.binarySearch(x);
         int result = (int) resultPair.keySet().toArray()[0];
-        //this.semArr.get(resultIndex).startWriting(); --deadlock
-        // System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
+        System.out.println("=============handle outside===========");
+        // this.semArr.get(resultIndex).startWriting(); --deadlock
+        // System.out.println("========================before finish read IN
+        // DELETE=========================" + " IDX:" + resultIndex);
         // print_Sem_arr();
-        
-        // System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
+
+        // System.out.println("========================before finish read IN
+        // MEMBER=========================" + " IDX:" + result);
         // print_Sem_arr();
-        //print_Sem_arr();
+        // print_Sem_arr();
 
         // System.out.println(result);
         if (result > lastEleIndex) {
-            //System.out.println(result + " left eventually finish");
+            // System.out.println(result + " left eventually finish");
             for (int i : resultPair.get(result)) {
                 this.semArr.get(i).finishReading();
             }
-            //print_Sem_arr();
+            // print_Sem_arr();
             return false;
         }
-        
+
         if (this.arr.get(result) != x) {
-            //System.out.println(result + " left eventually finish");
+            // System.out.println(result + " left eventually finish");
             for (int i : resultPair.get(result)) {
                 this.semArr.get(i).finishReading();
             }
-            //print_Sem_arr();
+            System.out.println("=============handle inside===========");
+            print_Sem_arr();
             return false;
         }
-        //System.out.println(result + " left eventually finish");
+        // System.out.println(result + " left eventually finish");
         for (int i : resultPair.get(result)) {
             this.semArr.get(i).finishReading();
         }
-        //print_Sem_arr();
+        // print_Sem_arr();
         return true;
 
     }
