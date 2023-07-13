@@ -31,7 +31,7 @@ public class Ass1Lock {
         readerCount--;
         
         if (readerCount == 0 && writeLock == true) {
-            System.out.println("=============release first write===============");
+            //System.out.println("=============release first write===============");
             beginWrite.release();
         }
         // Release the reader semaphore

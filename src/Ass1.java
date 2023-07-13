@@ -41,8 +41,8 @@ public class Ass1 {
             Ass1Lock newLock = new Ass1Lock();
             semArr.add(newLock);
         }
-        System.out.println("before start");
-        print_Sem_arr();
+        //System.out.println("before start");
+        //print_Sem_arr();
     }
 
     public void insert(int x) throws InterruptedException {
@@ -93,8 +93,8 @@ public class Ass1 {
         // insert the element between the current list
         // already lock from the nullIndex to insert Index
         int nullIndex = this.findNearestNull2(insertIndex);
-        System.out.println("insertidx:" + insertIndex);
-        System.out.println("nullidx:" + nullIndex);
+        //System.out.println("insertidx:" + insertIndex);
+        //System.out.println("nullidx:" + nullIndex);
 
         //shift完release writing 锁
         if (insertIndex < nullIndex) {
@@ -251,7 +251,7 @@ public class Ass1 {
             // when lastIndex is not -1 when we're searching to the right, the nearest index
             // must be lastindex + 1
             //i didn't find any -1, j also didn't find any -1
-            System.out.println("i:" + i + "is null? "+ (this.arr.get(i) == -1) + "\n" + " j:" + j + "is null? "+ (this.arr.get(j) == -1));
+            //System.out.println("i:" + i + "is null? "+ (this.arr.get(i) == -1) + "\n" + " j:" + j + "is null? "+ (this.arr.get(j) == -1));
            
             // if (j == this.lastEleIndex && this.arr.get(j) != -1) {
             //     if (i != index) this.semArr.get(i).startReading();
@@ -286,7 +286,7 @@ public class Ass1 {
                 if (j != index) this.semArr.get(j).finishWriting();
             }
         }
-        System.out.println("out----------------------");
+        //System.out.println("out----------------------");
         // int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
@@ -365,10 +365,10 @@ public class Ass1 {
         //other thread may affect the content on resultIndex --PROBLEM
 
         if (numV == 0) return;
-        System.out.println("========================before write=========================" + " IDX:"  + resultIndex);
-        print_Sem_arr();
+        //System.out.println("========================before write=========================" + " IDX:"  + resultIndex);
+        //print_Sem_arr();
         this.semArr.get(resultIndex).startWriting();
-        System.out.println("========================start write=========================" + " IDX:" + resultIndex);
+        //System.out.println("========================start write=========================" + " IDX:" + resultIndex);
         
         if (this.lastEleIndex < resultIndex) {
             //only happen in concurrency
@@ -399,7 +399,7 @@ public class Ass1 {
 
         }
         this.semArr.get(resultIndex).finishWriting();
-        System.out.println("========================finish write=========================");
+        //System.out.println("========================finish write=========================");
     }
 
 
@@ -423,7 +423,7 @@ public class Ass1 {
         while (left <= right) {
             
             int mid = left + ((right - left) >> 1);
-            System.out.println(mid + " Start read");
+           // System.out.println(mid + " Start read");
             this.semArr.get(mid).startReading();
             while ( this.arr.get(mid) == -1) {
                 //System.out.println("IMHERE---------------");
@@ -437,9 +437,9 @@ public class Ass1 {
                     System.out.println("origin: mid = " + mid);
                     return 0; // in case mid goes out of left bound
                 }
-                System.out.println(oldMid + "o finish read");
+                //System.out.println(oldMid + "o finish read");
                 this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
-                System.out.println(mid + "o start read");
+                //System.out.println(mid + "o start read");
                 this.semArr.get(mid).startReading();
             }
 
@@ -452,11 +452,11 @@ public class Ass1 {
             }
             // return before the loop finish so that we don't finish reading 
             if (left > right) {
-                System.out.println("left :" + Integer.toString(left));
-                System.out.println("right :" + Integer.toString(right));
-                System.out.println(mid + " goes out, wait for finish");
+                //System.out.println("left :" + Integer.toString(left));
+                //System.out.println("right :" + Integer.toString(right));
+                //System.out.println(mid + " goes out, wait for finish");
                 this.semArr.get(mid).finishReading();
-                print_Sem_arr();
+                //print_Sem_arr();
                 if (left > lastEleIndex) {
                     //add for concurrency
                     left = lastEleIndex;
@@ -464,7 +464,7 @@ public class Ass1 {
                 this.semArr.get(left).startReading();
                 return left;
             }
-            System.out.println(mid + " finish");
+            //System.out.println(mid + " finish");
             this.semArr.get(mid).finishReading(); // -- PROBLEM HERE
         }
         // System.out.println("left :" + Integer.toString(left));

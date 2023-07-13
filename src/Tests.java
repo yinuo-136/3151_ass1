@@ -1,29 +1,78 @@
 package src;
 
 import java.util.Random;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Tests {
 
-    public static class InsertWriterInOrder extends Thread {
+    // public static class Compress extends Thread {
+
+    //     Ass1 ass1;
+
+    //     public Compress(Ass1 a) {
+    //         this.ass1 = a;
+    //     }
+
+    //     @Override
+    //     public void run() {
+
+    //         while (true) {
+    //             if (ass1.lastEleIndex - ass1.numV > ass1.shiftRatio) {
+    //                 try {
+    //                     ass1.compress2();
+    //                 } catch (InterruptedException e) {
+    //                     e.printStackTrace();
+    //                 }
+    //             }
+    //         }
+
+    //     }
+    // }
+
+    public static class InsertWriterRandom extends Thread {
 
         Ass1 ass1;
-        
-        public InsertWriterInOrder (Ass1 a) {
+
+        public InsertWriterRandom(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                    try {
-                        System.out.println("insert " + i );
-                        ass1.insert(i);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    Random rn = new Random();
+                    int answer = rn.nextInt(10);
+                    ass1.insert(answer);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
+
+        }
+    }
+
+    public static class InsertWriterInOrder extends Thread {
+
+        Ass1 ass1;
+
+        public InsertWriterInOrder(Ass1 a) {
+            this.ass1 = a;
+        }
+
+        @Override
+        public void run() {
+
+            for (int i = 0; i < 10; i++) {
+                try {
+                    System.out.println("insert " + i);
+                    ass1.insert(i);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
         }
     }
@@ -31,24 +80,32 @@ public class Tests {
     public static class MemberRandomReader extends Thread {
 
         Ass1 ass1;
-        
-        public MemberRandomReader (Ass1 a) {
+
+        public MemberRandomReader(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                    Random rn = new Random();
-                    int answer = rn.nextInt(10);
-                    try {
-                        System.out.println(this + "member: " + answer + "is in the list? ->" + ass1.member(answer));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                Random rn = new Random();
+                int answer = rn.nextInt(10);
+                try {
+                    System.out.println(this + "member: " + answer + "is in the list? ->" + ass1.member(answer));
+                    //ass1.print_Sem_arr();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
+
+
+            // try {
+            //     System.out.println(this + "member: " + 1 + "is in the list? ->" + ass1.member(1));
+            // } catch (InterruptedException e) {
+     
+            //     e.printStackTrace();
+            // }
 
         }
     }
@@ -56,22 +113,21 @@ public class Tests {
     public static class MemberReader extends Thread {
 
         Ass1 ass1;
-        
-        public MemberReader (Ass1 a) {
+
+        public MemberReader(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                    try {
-                        System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    System.out.println(this + "member: " + i + "is in the list? ->" + ass1.member(i));
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
 
         }
     }
@@ -79,24 +135,23 @@ public class Tests {
     public static class DeleteWriter extends Thread {
 
         Ass1 ass1;
-        
+
         public DeleteWriter(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                    try {
-                            System.out.println(this + "delete: " + i);
-                            ass1.delete(i);
-                        
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                try {
+                    System.out.println(this + "delete: " + i);
+                    ass1.delete(i);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            
 
         }
     }
@@ -104,30 +159,42 @@ public class Tests {
     public static class DeleteRandomWriter extends Thread {
 
         Ass1 ass1;
-        
+
         public DeleteRandomWriter(Ass1 a) {
             this.ass1 = a;
         }
 
         @Override
         public void run() {
-            
+
             for (int i = 0; i < 10; i++) {
-                    Random rn = new Random();
-                    int answer = rn.nextInt(10);
-                    try {
-                            System.out.println(this + "delete: " + answer);
-                            ass1.delete(answer);
-                        
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                Random rn = new Random();
+                int answer = rn.nextInt(10);
+                try {
+                    // System.out.println(this + "delete: " + answer);
+                    // ass1.delete(answer);
+                    //System.out.println(this + "delete: " + 3);
+                    ass1.delete(answer);
+                    //System.out.println("======================deleter===================");
+                    //System.out.println(ass1.arr);
+                    // ass1.compress2();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
+            // try {
+            //     //System.out.println(this + "delete: " + 1);
+            //     ass1.delete(1);
+            // } catch (InterruptedException e) {
+    
+            //     e.printStackTrace();
+            // }
             
 
+            
         }
     }
-    
+
     public static void test1() throws InterruptedException {
         System.out.println("================test1=============");
         Ass1 test = new Ass1(10);
@@ -137,7 +204,7 @@ public class Tests {
         test.insert(4);
         test.numV = 4;
         test.lastEleIndex = 3;
-        //test.binarySearch(5);
+        // test.binarySearch(5);
         test.insert(5);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -154,7 +221,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        //test.binarySearch(0);
+        // test.binarySearch(0);
         test.insert(12);
         test.insert(13);
         test.insert(14);
@@ -176,7 +243,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        //test.binarySearch(1);
+        // test.binarySearch(1);
         test.insert(1);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -193,14 +260,16 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        //test.binarySearch(8);
-        
+        // test.binarySearch(8);
+
         test.delete(8);
         test.insert(9);
+
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
+        test.print_Sem_arr();
     }
 
     public static void test5() throws InterruptedException {
@@ -212,7 +281,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        //test.binarySearch(8);
+        // test.binarySearch(8);
         test.delete(8);
         test.delete(10);
         test.insert(9);
@@ -239,7 +308,7 @@ public class Tests {
         // test.insert(11);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        //test.binarySearch(8);
+        // test.binarySearch(8);
         test.delete(8);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
@@ -269,7 +338,7 @@ public class Tests {
         test.insert(11);
         test.numV = 6;
         test.lastEleIndex = 5;
-        //test.binarySearch(8);
+        // test.binarySearch(8);
         test.delete(8);
         test.delete(10);
         test.delete(11);
@@ -284,14 +353,14 @@ public class Tests {
         System.out.println("==============test8=================");
         Ass1 test = new Ass1(10);
         test.insert(2);
-        
+
         test.insert(3);
         test.insert(4);
         test.insert(8);
         test.insert(10);
         test.insert(11);
         test.insert(12);
-        //test.binarySearch(8);
+        // test.binarySearch(8);
         test.delete(2);
         test.delete(3);
         test.insert(5);
@@ -328,7 +397,7 @@ public class Tests {
         test.delete(9);
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        //test.binarySearch(12);
+        // test.binarySearch(12);
         test.insert(12);
         test.insert(3);
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
@@ -353,7 +422,7 @@ public class Tests {
         test.insert(11);
         // test.arr.add(12);
         test.delete(10);
-        //test.binarySearch(12);
+        // test.binarySearch(12);
         test.insert(12);
 
         test.insert(9);
@@ -373,7 +442,7 @@ public class Tests {
         test.insert(8);
         test.insert(10);
         test.insert(11);
-        //test.binarySearch(1);
+        // test.binarySearch(1);
         test.delete(4);
         test.delete(5);
         test.delete(6);
@@ -397,7 +466,7 @@ public class Tests {
         Ass1 test = new Ass1(1);
         test.numV = 0;
         test.lastEleIndex = 0;
-        //test.binarySearch(1);
+        // test.binarySearch(1);
         test.delete(8);
         test.insert(8);
         // test.delete(8);
@@ -411,7 +480,7 @@ public class Tests {
 
     public static void test13() throws InterruptedException {
         System.out.println("==============test13 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(2);
         test.insert(3);
@@ -422,9 +491,8 @@ public class Tests {
         test.delete(2);
         test.delete(3);
         test.delete(4);
-        //test.compress();
+        // test.compress();
         test.compress2();
-
 
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -434,7 +502,7 @@ public class Tests {
 
     public static void test14() throws InterruptedException {
         System.out.println("==============test14 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(3);
         test.insert(2);
         test.insert(3);
@@ -447,7 +515,7 @@ public class Tests {
         test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
-        //test.compress();
+        // test.compress();
         test.compress2();
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -457,7 +525,7 @@ public class Tests {
 
     public static void test15() throws InterruptedException {
         System.out.println("==============test15 COMPRESS=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(3);
         test.insert(2);
         test.insert(3);
@@ -465,10 +533,10 @@ public class Tests {
 
         test.delete(2);
         test.delete(3);
-       
-        //test.compress();
+
+        // test.compress();
         test.compress2();
-        //test.compress2();
+        // test.compress2();
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
@@ -477,7 +545,7 @@ public class Tests {
 
     public static void test16() throws InterruptedException {
         System.out.println("==============test16 CONCURRENCY MEMBER=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(0);
         test.insert(1);
@@ -504,7 +572,7 @@ public class Tests {
 
     public static void test17() throws InterruptedException {
         System.out.println("==============test17 CONCURRENCY MEMBER AND DELETE=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(0);
         test.insert(1);
@@ -516,21 +584,20 @@ public class Tests {
         test.insert(7);
         test.insert(8);
         test.insert(9);
-
-        test.print_Sem_arr();
+        // System.out.println("=======jjjjjjjjjjjjjjjjjjjjj=======");
+        // test.print_Sem_arr();
         // MemberReader m1 = new MemberReader(test);
         // DeleteWriter m2 = new DeleteWriter(test);
 
-        MemberRandomReader m1 = new MemberRandomReader(test);
+        MemberReader m1 = new MemberReader(test);
         DeleteRandomWriter m2 = new DeleteRandomWriter(test);
 
-        
         m2.start();
         m1.start();
 
         m1.join();
         m2.join();
-        
+
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
@@ -539,7 +606,7 @@ public class Tests {
 
     public static void test18() throws InterruptedException {
         System.out.println("==============test18 CONCURRENCY MEMBER AND DELETE AND INSERT=================");
-        //COMPRESS TEST
+        // COMPRESS TEST
         Ass1 test = new Ass1(10);
         test.insert(0);
         test.insert(1);
@@ -560,7 +627,6 @@ public class Tests {
         DeleteRandomWriter m2 = new DeleteRandomWriter(test);
         InsertWriterInOrder m3 = new InsertWriterInOrder(test);
 
-        
         m2.start();
         m1.start();
         m3.start();
@@ -568,13 +634,97 @@ public class Tests {
         m1.join();
         m2.join();
         m3.join();
-        
+
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
         System.out.print("list has -1: ");
         System.out.println(test.arr);
     }
 
+    public static void test19() throws InterruptedException {
+        System.out.println("==============test19 CONCURRENCY ALL RANDOM=================");
+        // COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        test.print_Sem_arr();
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        DeleteRandomWriter m2 = new DeleteRandomWriter(test);
+        InsertWriterRandom m3 = new InsertWriterRandom(test);
+        // Compress m4 = new Compress(test);
+
+        // m4.start();
+        m2.start();
+        m1.start();
+        m3.start();
+
+        m1.join();
+        m2.join();
+        m3.join();
+        // m4.join();
+
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
+
+    public static void test20() throws InterruptedException {
+        System.out.println("==============test20 COMPRESS=================");
+        // COMPRESS TEST
+        Ass1 test = new Ass1(10);
+        // Compress m4 = new Compress(test);
+        // m4.start();
+        //test.insert(0);
+        test.insert(1);
+        test.insert(2);
+        test.insert(3);
+        test.insert(4);
+        test.insert(5);
+        test.insert(6);
+        test.insert(7);
+        test.insert(8);
+        test.insert(9);
+
+        test.delete(2);
+        test.delete(3);
+        test.delete(4);
+        test.delete(5);
+        test.delete(6);
+        test.delete(7);
+
+        //test.print_Sem_arr();
+        // MemberReader m1 = new MemberReader(test);
+        // DeleteWriter m2 = new DeleteWriter(test);
+        MemberRandomReader m1 = new MemberRandomReader(test);
+        DeleteRandomWriter m2 = new DeleteRandomWriter(test);
+        InsertWriterRandom m3 = new InsertWriterRandom(test);
+
+        m2.start();
+        m1.start();
+        m3.start();
+
+        m1.join();
+        m2.join();
+        m3.join();
+        // m4.join();
+
+        System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
+        test.print_sorted();
+        System.out.print("list has -1: ");
+        System.out.println(test.arr);
+    }
 
     public static void main(String[] args) throws InterruptedException {
         // test1();
@@ -592,10 +742,17 @@ public class Tests {
         // test13();
         // test14();
         // test15();
-        //test16();
-        // test17();
+        // test16();
+        //test17();
         test18();
+        // test19();
+        //test20();
+        // HashMap<Integer, ArrayList<Integer>> h = new HashMap<>();
+
+        // h.put(1, new ArrayList<Integer>());
+        // //key
+        // int key = (int) h.keySet().toArray()[0];
+        // System.out.println(key + " " + (h.get(key)).getClass());
+
     }
 }
-
-
