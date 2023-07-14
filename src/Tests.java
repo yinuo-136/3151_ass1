@@ -6,29 +6,42 @@ import java.util.HashMap;
 
 public class Tests {
 
-    // public static class Compress extends Thread {
+    public static class Compress extends Thread {
 
-    //     Ass1 ass1;
+        Ass1 ass1;
+        ArrayList<Thread> threads;
+        public Compress(Ass1 a, ArrayList<Thread> ts) {
+            this.ass1 = a;
+            this.threads = ts;
+        }
 
-    //     public Compress(Ass1 a) {
-    //         this.ass1 = a;
-    //     }
+        @Override
+        public void run() {
 
-    //     @Override
-    //     public void run() {
+            while (oneThreadAlive()) {
+                if (ass1.lastEleIndex - ass1.numV > ass1.shiftRatio) {
+                    try {
+                        ass1.compress2();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                
 
-    //         while (true) {
-    //             if (ass1.lastEleIndex - ass1.numV > ass1.shiftRatio) {
-    //                 try {
-    //                     ass1.compress2();
-    //                 } catch (InterruptedException e) {
-    //                     e.printStackTrace();
-    //                 }
-    //             }
-    //         }
+            }
 
-    //     }
-    // }
+
+        }
+
+        private boolean oneThreadAlive() {
+            boolean result = false;
+            for (Thread t : this.threads) {
+                result = result || t.isAlive();
+            }
+            return result;
+        }
+
+    }
 
     public static class InsertWriterRandom extends Thread {
 
@@ -684,8 +697,7 @@ public class Tests {
         System.out.println("==============test20 COMPRESS=================");
         // COMPRESS TEST
         Ass1 test = new Ass1(10);
-        // Compress m4 = new Compress(test);
-        // m4.start();
+       
         //test.insert(0);
         test.insert(1);
         test.insert(2);
@@ -709,16 +721,24 @@ public class Tests {
         // DeleteWriter m2 = new DeleteWriter(test);
         MemberRandomReader m1 = new MemberRandomReader(test);
         DeleteRandomWriter m2 = new DeleteRandomWriter(test);
-        InsertWriterRandom m3 = new InsertWriterRandom(test);
+        //InsertWriterRandom m3 = new InsertWriterRandom(test);
 
+        ArrayList<Thread> ts = new ArrayList<>();
+        ts.add(m1);
+        ts.add(m2);
+        //ts.add(m3);
+        Compress m4 = new Compress(test,ts);
+
+        
         m2.start();
         m1.start();
-        m3.start();
+        //m3.start();
+        m4.start();
 
         m1.join();
         m2.join();
-        m3.join();
-        // m4.join();
+        //m3.join();
+        m4.join();
 
         System.out.println("numV:" + test.numV + "\nlastEleIndex:" + test.lastEleIndex);
         test.print_sorted();
@@ -744,9 +764,9 @@ public class Tests {
         // test15();
         // test16();
         //test17();
-        test18();
+        //test18();
         // test19();
-        //test20();
+        test20();
         // HashMap<Integer, ArrayList<Integer>> h = new HashMap<>();
 
         // h.put(1, new ArrayList<Integer>());

@@ -1,6 +1,7 @@
 package src;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * ass1
@@ -198,17 +199,24 @@ public class Ass1 {
     }
     */
 
-    public void compress2() {
+    public void compress2() throws InterruptedException {
         // arr is null, do nothing
         if (this.numV == 0) {
             return;
         }
+        this.semArr.get(0).startReading();
         if (this.numV == 1 && this.arr.get(0) != -1) {
+            this.semArr.get(0).finishReading();
             return;
         }
+        this.semArr.get(0).finishReading();
+
+        startWritingBlocks(0, lastEleIndex);
         this.arr.removeIf(n -> (n == -1));
+        int oldLastEleIndex = lastEleIndex;
         this.lastEleIndex = this.arr.size() - 1;
-        
+        endWritingBlocks(0, oldLastEleIndex);
+
     }
     /*
         锁上别解锁，找到nearest null 了以后 把不需要锁的解锁
@@ -356,6 +364,31 @@ public class Ass1 {
         //if there's no element in the list, skip(currently)
         // System.out.println("========================before read IN DELETE=========================" + " IDX:" );
         // print_Sem_arr();
+
+        // boolean success = false;
+        // int resultIndex = -1;
+        // while (!success) {
+        //     try {
+        //         resultIndex = this.binarySearch(x);
+
+        //         success = true; // If it reaches this line, no exception was thrown
+        //     } catch (Exception e) {
+        //         this.semArr.get(resultIndex).finishReading();
+        //     }
+        //     System.out.println("exception loop");
+        // }
+
+        // if (resultIndex == -1) {
+        //     return;
+        // }
+
+        // int resultIndex;
+        // try {
+        //     resultIndex = this.binarySearch(x);
+        // } catch (Exception e) {
+        //     resultIndex = this.binarySearch(x);
+        // } 
+
         int resultIndex = this.binarySearch(x);
         //this.semArr.get(resultIndex).startWriting(); --deadlock
         // System.out.println("========================before finish read IN DELETE=========================" + " IDX:"  + resultIndex);
@@ -441,6 +474,8 @@ public class Ass1 {
                 this.semArr.get(oldMid).finishReading();        // -- PROBLEM HERE
                 //System.out.println(mid + "o start read");
                 this.semArr.get(mid).startReading();
+
+                
             }
 
             if (this.arr.get(mid) == tar) {
@@ -501,6 +536,31 @@ public class Ass1 {
     public boolean member(int x) throws InterruptedException {
         // System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
         // print_Sem_arr();
+
+        // boolean success = false;
+        // int result = -1;
+        // while (!success) {
+        //     try {
+        //         result = this.binarySearch(x);
+        //         success = true; // If it reaches this line, no exception was thrown
+        //     } catch (Exception e) {
+        //         this.semArr.get(result).finishReading();
+        //     }
+        //     System.out.println("exception loop");
+        // }
+
+        // if (result == -1) {
+        //     //never happend
+        //     return false;
+        // }
+
+
+        // int result;
+        // try {
+        //     result = this.binarySearch(x);
+        // } catch (Exception e) {
+        //     result = this.binarySearch(x);
+        // } 
         int result = this.binarySearch(x);
         // System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
         // print_Sem_arr();
