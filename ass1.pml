@@ -1,4 +1,12 @@
-mtype = {READER, WRITER};mtype current_writer = 0;	mtype reader_sem = 1;	mtype reader_finish_sem = 1;	mtype writer_sem = 1;byte reader_count = 0;bool writer_writing = false;bool writer_waiting = false;active [10] proctype Reader() {
+mtype = {READER, WRITER};
+mtype current_writer = 0;	
+mtype reader_sem = 1;	
+mtype reader_finish_sem = 1;	
+mtype writer_sem = 1;
+byte reader_count = 0;
+bool writer_writing = false;
+bool writer_waiting = false;
+active [10] proctype Reader() {
     do
     :: true ->
         atomic {
