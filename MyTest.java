@@ -157,9 +157,24 @@ public class MyTest {
     }
 
     public static void main(String[] args) throws InterruptedException {
-        // TestCaseFixBoundOne(); // this one should block
+        // test 1: test block case
+        // Expected output: The insertion should be blocked. Therefore not output is expected.
+        TestCaseFixBoundOne(); 
+
+        // test 2: test delete after block
+        // Expected output: {1, 2, 3, 9, 10}
         // TestCaseFixBoundTwo();
+
+        // test 3 the safety property of this implementation, 
+        // i.e read operations will never return false result when there is writing operation concurrently running
+        // Expected output: number found!
         // TestCaseSaftey();
-        TestCaseComplex();
+
+        // test 4 a more complex cases with multiple threads running the same time and doing different operations
+        // Expected output: 
+        // {3, 8, 10, }
+        // number found!
+        // number found!
+        // TestCaseComplex();
     }
 }
