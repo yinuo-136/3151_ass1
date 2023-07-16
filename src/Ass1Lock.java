@@ -31,7 +31,6 @@ public class Ass1Lock {
         readerCount--;
         
         if (readerCount == 0 && writeLock == true) {
-            //System.out.println("=============release first write===============");
             beginWrite.release();
         }
         // Release the reader semaphore
@@ -59,83 +58,6 @@ public class Ass1Lock {
         readSem.release();
     }
 
-
-    public static void main(String[] args) throws InterruptedException {
-        Ass1Lock SemLock = new Ass1Lock();
-
-        //DEADLOCK COMBINATION
-        SemLock.startReading();
-        SemLock.startWriting();
-        SemLock.finishReading();
-
-
-        //DEADLOCK COMBINATION
-        SemLock.startReading();
-        SemLock.finishReading();
-        SemLock.startWriting();
-        
-
-        
-        System.out.println("finish");
-    }
 }
 
-// public class Ass1Lock {
-    
-//     private Semaphore writeSem = new Semaphore(0, true);
-//     private Semaphore readSem = new Semaphore(1, true);
 
-//     private int readerCount = 0;
-//     private int writeCount = 0;
-    
-//     public void startReading() throws InterruptedException {
-//         if (this.writeCount != 0 || this.writeSem.hasQueuedThreads()) {
-//             this.readSem.acquire();
-//         }
-//         this.readerCount++;
-//         this.readSem.release();
-//     }
-
-//     public void finishReading() throws InterruptedException {
-//         this.readerCount--;
-//         if (this.readerCount == 0) {
-//             this.writeSem.release();
-//         }
-//     }
-    
-//     public void startWriting() throws InterruptedException {
-//         if (this.writeCount != 0 || readerCount != 0) {
-//             this.writeSem.acquire();
-//         }
-//         writeCount++;
-//     }
-    
-//     public void finishWriting() {
-//         this.writeCount--;
-//         if (!this.readSem.hasQueuedThreads()) {
-//             this.writeSem.release();
-//         } else {
-//             this.readSem.release();
-//         }
-//     }
-
-
-//     public static void main(String[] args) throws InterruptedException {
-//         Ass1Lock SemLock = new Ass1Lock();
-
-//         //DEADLOCK COMBINATION
-//         SemLock.startReading();
-//         SemLock.startWriting();
-//         SemLock.finishReading();
-
-
-//         //DEADLOCK COMBINATION
-//         // SemLock.startReading();
-//         // SemLock.finishReading();
-//         // SemLock.startWriting();
-        
-
-        
-//         System.out.println("finish");
-//     }
-// }
