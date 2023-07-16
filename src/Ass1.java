@@ -182,20 +182,13 @@ public class Ass1 {
 
             nullflag = this.arr.get(i) != -1 && this.arr.get(j) != -1;
             if (!nullflag) {
-                // if (i != index) this.semArr.get(i).finishReading();
-                // if (j != index) this.semArr.get(j).finishReading();
                 break;
             }
             if (i > 0) {
-                // if (i != index) this.semArr.get(i).finishReading();
-                i--;
-                //this.semArr.get(i).startReading();
-                
+                i--; 
             }
             if (j < this.lastEleIndex) {
-                // if (j != index) this.semArr.get(j).finishReading();
                 j++;
-                //this.semArr.get(j).startReading();
             }
 
             if (j == this.lastEleIndex) {
@@ -222,7 +215,6 @@ public class Ass1 {
                 if (j != index) this.semArr.get(j).finishWriting();
             }
         }
-        // int result = -1;
         if (this.arr.get(i) == -1 && this.arr.get(j) == -1) {
             // back and front both have null
             if (index - i <= j - index) {
@@ -250,7 +242,6 @@ public class Ass1 {
         int resultIndex = this.binarySearch(x);
 
         this.semArr.get(resultIndex).finishReading();
-        //other thread may affect the content on resultIndex --PROBLEM
 
         if (numV == 0) return;
         this.semArr.get(resultIndex).startWriting();
@@ -323,7 +314,6 @@ public class Ass1 {
             // return before the loop finish so that we don't finish reading 
             if (left > right) {
                 this.semArr.get(mid).finishReading();
-                //print_Sem_arr();
                 if (left > lastEleIndex) {
                     //add for concurrency
                     left = lastEleIndex;
@@ -363,53 +353,18 @@ public class Ass1 {
     }
 
     public boolean member(int x) throws InterruptedException {
-        // System.out.println("========================before read IN MEMBER=========================" + " IDX:" );
-        // print_Sem_arr();
-
-        // boolean success = false;
-        // int result = -1;
-        // while (!success) {
-        //     try {
-        //         result = this.binarySearch(x);
-        //         success = true; // If it reaches this line, no exception was thrown
-        //     } catch (Exception e) {
-        //         this.semArr.get(result).finishReading();
-        //     }
-        //     System.out.println("exception loop");
-        // }
-
-        // if (result == -1) {
-        //     //never happend
-        //     return false;
-        // }
-
-
-        // int result;
-        // try {
-        //     result = this.binarySearch(x);
-        // } catch (Exception e) {
-        //     result = this.binarySearch(x);
-        // } 
         int result = this.binarySearch(x);
-        // System.out.println("========================before finish read IN MEMBER=========================" + " IDX:"  + result);
-        // print_Sem_arr();
-        //print_Sem_arr();
 
-        // System.out.println(result);
         if (result > lastEleIndex) {
-            //System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
             //print_Sem_arr();
             return false;
         }
         
         if (this.arr.get(result) != x) {
-            //System.out.println(result + " left eventually finish");
             this.semArr.get(result).finishReading();
-            //print_Sem_arr();
             return false;
         }
-        //System.out.println(result + " left eventually finish");
         this.semArr.get(result).finishReading();
         //print_Sem_arr();
         return true;
