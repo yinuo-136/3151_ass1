@@ -8,3 +8,7 @@ The test cases provided can verify the claims in the report. In order to reprodu
 Marks should uncomment the test case they want to reproduce and remain the rest test cases commented. The expected output for each test case has been provided in the main function. 
 Click run to execute the MyTest.java to verify our claims. 
 ![Alt text](https://github.com/yinuo-136/3151_ass1/blob/Ian2/MyTest.png)
+
+**Spin Model:** 
+To run the Promela code on iSpin, open the promela code we submit using 3151 iSpin. Save the file and go to verification. Select use claim and type in property1 to verify the property1 LTL. Similarly, select use claim and type in property2 to verify the property2 LTL.
+![Alt text](d3f2c57dc96f7c0a2bc311b12c0fc9a.png)
